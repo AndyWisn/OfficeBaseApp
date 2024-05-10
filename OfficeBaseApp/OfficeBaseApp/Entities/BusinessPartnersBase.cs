@@ -2,7 +2,7 @@
 
 namespace OfficeBaseApp.Entities
 {
-    public class BusinessPartnerBase : IEntity
+    public class BusinessPartnersBase : IEntity
     {
         public int Id { get; set; }
         public string? Name { get; set; }

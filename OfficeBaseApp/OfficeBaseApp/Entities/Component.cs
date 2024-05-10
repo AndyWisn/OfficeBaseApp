@@ -11,7 +11,7 @@
         }
         Vendor? Vendor { get; set; }
         float Price { get; set; }
-        public override string ToString() => "Component " + this.ToString();
+        public override string ToString() => "Component " + base.ToString();
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace OfficeBaseApp.Entities
 {
-    public class Vendor : BusinessPartnerBase
+    public class Vendor : BusinessPartnersBase
     {
         public Vendor()
         {
@@ -8,7 +8,7 @@
         public Vendor(string name)
         {
         }
-        public override string ToString() => "Vendor " + this.ToString();
+        public override string ToString() => "Vendor " + base.ToString();
     }
 }
 

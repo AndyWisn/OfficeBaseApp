@@ -1,15 +1,15 @@
 ﻿namespace OfficeBaseApp.Repositories;
 using OfficeBaseApp.Entities;
+using OfficeBaseApp.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-public class ListRepository<T> where T : class, IEntity, new()
+public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
 {
     private readonly List<T> _items = new();
     public IEnumerable<T> GetAll()
     {
         return _items.ToList();
     }
-
     public void Add(T item)
     {
         item.Id = _items.Count + 1;
@@ -19,8 +19,11 @@ public class ListRepository<T> where T : class, IEntity, new()
     {
         return default(T);
     }
-    public void Save()
+    public void Remove(T item)
     {
-       //not required with list
+        _items.Remove(item);
+    }
+    public void Save()
+    {   
     }
 }

@@ -64,7 +64,7 @@ customerRepository.Save();
 
 vendorRepository.Remove(vendorRepository.GetById(1));
 vendorRepository.Remove(vendorRepository.GetById(2));
-//vendorRepository.Save();                                      //Błąd po save!
+vendorRepository.Save();                                      //Błąd po save!
 
 componentRepository.Remove(componentRepository.GetById(1));
 componentRepository.Remove(componentRepository.GetById(2));

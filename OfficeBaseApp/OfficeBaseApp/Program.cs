@@ -13,31 +13,36 @@ var vendorRepository = new SqlRepository<Vendor>(new OfficeBaseAppDbContext());
 var componentRepository = new SqlRepository<Component>(new OfficeBaseAppDbContext());
 var productRepository = new SqlRepository<Product>(new OfficeBaseAppDbContext());
 
-
+//Adding customers, vendors, Wholesalers (customer), Components & products to list repositories
 AddCustomers(customerListRepository);
 AddVendor(vendorListRepository);
 AddWholesaler(customerListRepository);
 AddComponent(componentListRepository, vendorListRepository);
 AddProduct(productListRepository, componentListRepository);
 
+//Adding customers, vendors, Wholesalers (customer), Components & products to Sql repositories
 AddCustomers(customerRepository);
 AddVendor(vendorRepository);
 AddWholesaler(customerRepository);
 AddComponent(componentRepository, vendorRepository);
 AddProduct(productRepository, componentRepository);
 
+//Print List repositories
 Console.WriteLine("\nTest List repositories:");
 WriteAllToConsole(customerListRepository);
 WriteAllToConsole(vendorListRepository);
 WriteAllToConsole(componentListRepository);
 WriteAllToConsole(productListRepository);
 
+//Print SQL repositories
 Console.WriteLine("\nTest EntityFramework Sql repositories:");
 WriteAllToConsole(customerRepository);
 WriteAllToConsole(vendorRepository);
 WriteAllToConsole(componentRepository);
 WriteAllToConsole(productRepository);
 
+
+//Test item removing from list repositories
 customerListRepository.Remove(customerListRepository.GetById(1));
 customerListRepository.Remove(customerListRepository.GetById(2));
 vendorListRepository.Remove(vendorListRepository.GetById(1));
@@ -45,14 +50,14 @@ vendorListRepository.Remove(vendorListRepository.GetById(2));
 componentListRepository.Remove(componentListRepository.GetById(1));
 componentListRepository.Remove(componentListRepository.GetById(2));
 productListRepository.Remove(productListRepository.GetById(1));
-
-
 Console.WriteLine("\nTest List repositories after item remove:");
 WriteAllToConsole(customerListRepository);
 WriteAllToConsole(vendorListRepository);
 WriteAllToConsole(componentListRepository);
 WriteAllToConsole(productListRepository);
 
+
+//Test item removing from sql repositories
 customerRepository.Remove(customerRepository.GetById(1));
 customerRepository.Remove(customerRepository.GetById(2));
 customerRepository.Save();
@@ -73,6 +78,7 @@ WriteAllToConsole(customerRepository);
 WriteAllToConsole(vendorRepository);
 WriteAllToConsole(componentRepository);
 WriteAllToConsole(productRepository);
+
 
 static void AddCustomers(IRepository<Customer> customerRepo)
 {

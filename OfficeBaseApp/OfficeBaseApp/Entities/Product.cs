@@ -5,52 +5,52 @@
         public Product()
         {
         }
-
-        public Product(string name, Vendor? vendor, float price)
+        public Product(string name, string description)
         {
             this.Name = name;
-            this.Vendor = vendor;
-            this.Price = price;
+            this.Description = description;
+
         }
-        public Vendor? Vendor { get; set; }
-        public float Price
+        public List<Component> productionComponents = new();
+        public string ComponentListInString
         {
             get
             {
-                float price = 0;
-                foreach (var partSet in productionComponents)
+                string stringList = null;
+                if (this.productionComponents.Count>0)
                 {
-                    price += partSet.quantity * partSet.component.Price;
+                    for (int i = 0; i < this.productionComponents.Count - 1; i++)
+                    {
+                        stringList += this.productionComponents[i].Name + ",";
+                    }
+                    stringList += this.productionComponents[this.productionComponents.Count - 1].Name + ".";
                 }
-                return price;
+                return stringList;
+                
             }
             set { }
         }
-
-        public struct PartSet
+        public float ProductCost
         {
-            public Component component;
-            public int quantity;
+            get
+            {
+                float productComponentCostSum = 0;
+                foreach (Component component in this.productionComponents)
+                {
+                    productComponentCostSum += component.Price;
+                }
+                return productComponentCostSum;
+            }
+            set { }
         }
-
-        public List<PartSet> productionComponents = new();
-
-        public void AddProductionComponent(Component part, int qty)
+        public void AddProductionComponent(Component part)
         {
-            var partSetToAdd = new PartSet { component = part, quantity = qty };
-            productionComponents.Add(partSetToAdd);
+            this.productionComponents.Add(part);
         }
-
-        public void RemoveProductionComponent(Component part, int qty)
+        public void RemoveProductionComponent(Component part)
         {
-            var partSetToRemove = new PartSet { component = part, quantity = qty };
-            foreach(var removeComp in productionComponents)
-            { f (removeComp = partSetToRemove) productionComponents.Remove(removeComp); }           //dopisać!!
-            
+            this.productionComponents.Remove(part);
         }
-
-        public override string ToString() => "Product " + base.ToString();
-
-
+        public override string ToString() => string.Format("{0,-13} {1,30} {2,12} {3,10}", "Product", base.ToString(), "|Components:", this.ComponentListInString);
     }
 }

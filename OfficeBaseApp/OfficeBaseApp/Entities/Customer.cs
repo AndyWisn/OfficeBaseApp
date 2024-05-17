@@ -11,5 +11,5 @@ public class Customer : BusinessPartnersBase
         this.RepresentativeLastName = representativeLastName;
         this.Contact = contact;
     }
-    public override string ToString() => String.Format("{0,-10}", "Customer") + base.ToString();
+    public override string ToString() => string.Format("{0,-14}", "Customer  ") + base.ToString();
 }

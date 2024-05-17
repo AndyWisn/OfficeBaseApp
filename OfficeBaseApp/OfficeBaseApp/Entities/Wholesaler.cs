@@ -1,11 +1,9 @@
 ﻿namespace OfficeBaseApp.Entities;
-
 public class Wholesaler : Customer
 {
     public Wholesaler()
     {
     }
-
     public Wholesaler(string name, string representativeFirstName, string representativeLastName, string contact)
     {
         this.Name = name;
@@ -13,7 +11,5 @@ public class Wholesaler : Customer
         this.RepresentativeLastName = representativeLastName;
         this.Contact = contact;
     }
-    
-    public override string ToString() => "Wholesale" + base.ToString();
-
+    public override string ToString() => base.ToString().Replace("Customer  ", "Wholesaler");
 }

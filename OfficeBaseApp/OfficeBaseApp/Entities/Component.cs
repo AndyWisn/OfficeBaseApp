@@ -5,16 +5,16 @@
         public Component()
         {
         }
-
-        public Component(int id, string name, Vendor? vendor, float price)
+        public Component(string name, Vendor vendor, float price, string descryption)
         {
-            this.Name= name;
-            this.Vendor= vendor;
-            this.Price = price;
+            this.Name = name;
+            this.ComponentsVendor = vendor;
+            this.Description = descryption;
+            if (price == float.NaN) { this.Price = 0; }
+            else { this.Price = price; }
         }
-        Vendor? Vendor { get; set; }
+        public Vendor ComponentsVendor { get; set; }
         public float Price { get; set; }
-        public override string ToString() => "Component " + base.ToString();
-
+        public override string ToString() => string.Format("{0,-13} {1,-30} {2,-30}","Component", base.ToString(), $"|Vendor: {ComponentsVendor.Name}");
     }
 }

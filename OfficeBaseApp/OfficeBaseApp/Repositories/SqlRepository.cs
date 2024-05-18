@@ -16,7 +16,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     }
     public void Add(T item)
     {
-       _dbSet.AddAsync(item);
+       _dbSet.Add(item);
     }
     public IEnumerable<T> GetAll()
     {
@@ -30,8 +30,8 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         _dbSet.Remove(item);
     }
-    public void Save()
+    public async void Save()
     {
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }     
 }

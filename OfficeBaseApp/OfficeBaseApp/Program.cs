@@ -3,7 +3,7 @@ using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Data;
 using Microsoft.EntityFrameworkCore;
 
-//Add customers, vendors, Wholesalers (customer), Components & products to list repositories
+//Adding customers, vendors, Wholesalers (customer), Components & products to list repositories
 var customerListRepository = new ListRepository<Customer>();
 var vendorListRepository = new ListRepository<Vendor>();
 var componentListRepository = new ListRepository<Component>();
@@ -36,8 +36,6 @@ WriteAllToConsole(vendorListRepository);
 
 componentListRepository.Remove(componentListRepository.GetById(1));
 componentListRepository.Remove(componentListRepository.GetById(2));
-WriteAllToConsole(componentListRepository);
-
 productListRepository.GetById(1).RemoveProductionComponent(2);
 productListRepository.Remove(productListRepository.GetById(2));
 WriteAllToConsole(productListRepository);
@@ -45,7 +43,7 @@ WriteAllToConsole(productListRepository);
 
 
 
-//Add customers, vendors, Wholesalers (customer), Components & products to Sql repositories
+//Adding customers, vendors, Wholesalers (customer), Components & products to Sql repositories
 var customerRepository = new SqlRepository<Customer>(new OfficeBaseAppDbContext<Customer>());
 var vendorRepository = new SqlRepository<Vendor>(new OfficeBaseAppDbContext<Vendor>());
 var componentRepository = new SqlRepository<Component>(new OfficeBaseAppDbContext<Component>());
@@ -64,6 +62,28 @@ WriteAllToConsole(componentRepository);
 AddProduct(productRepository, componentRepository);
 WriteAllToConsole(productRepository);
 
+//Test item removing from sql repositories
+Console.WriteLine("\nTest Sql repositories after item remove:");
+customerRepository.Remove(customerRepository.GetById(1));
+customerRepository.Remove(customerRepository.GetById(2));
+customerRepository.Save();
+WriteAllToConsole(customerRepository);
+
+vendorRepository.Remove(vendorRepository.GetById(1));
+vendorRepository.Remove(vendorRepository.GetById(2));
+vendorRepository.Save();
+WriteAllToConsole(vendorRepository);
+
+componentRepository.Remove(componentRepository.GetById(1));
+componentRepository.Remove(componentRepository.GetById(2));
+componentRepository.Save();
+WriteAllToConsole(componentRepository);
+
+
+productRepository.GetById(1).RemoveProductionComponent(2);
+productRepository.Remove(productRepository.GetById(2));
+productRepository.Save();
+WriteAllToConsole(productRepository);
 
 
 
@@ -93,10 +113,14 @@ static void AddWholesaler(IRepository<Customer> customerRepo)
 }
 static void AddComponent(IRepository<Component> componentsRepo, IRepository<Vendor> vendorsRepo)
 {    
-    componentsRepo.Add(new Component("LM234",vendorsRepo.GetById(1),14.45f,"Converter" ));
-    componentsRepo.Add(new Component("AXT435",vendorsRepo.GetById(2),23.43f,"Connector" ));
-    componentsRepo.Add(new Component("IRM20-5",vendorsRepo.GetById(3),123.40f,"AC/DC module"));
-    componentsRepo.Add(new Component("CVB2423234",vendorsRepo.GetById(4),0.21f,"Filter" ));
+    componentsRepo.Add(new Component("LM234",14.45f,"Converter"));
+    componentsRepo.GetById(1).AddVendor(vendorsRepo.GetById(1));
+    componentsRepo.Add(new Component("AXT435",23.43f,"Connector"));
+    componentsRepo.GetById(2).AddVendor(vendorsRepo.GetById(2));
+    componentsRepo.Add(new Component("IRM20-5",123.40f,"AC/DC module"));
+    componentsRepo.GetById(3).AddVendor(vendorsRepo.GetById(1));
+    componentsRepo.Add(new Component("CVB2423234",0.21f,"Filter"));
+    componentsRepo.GetById(4).AddVendor(vendorsRepo.GetById(3));
     componentsRepo.Save();
 }
 static void AddProduct(IRepository<Product> productsRepo, IRepository<Component> componentRepo)
@@ -106,7 +130,7 @@ static void AddProduct(IRepository<Product> productsRepo, IRepository<Component>
     productsRepo.GetById(1).AddProductionComponent(componentRepo.GetById(2));
     productsRepo.GetById(1).AddProductionComponent(componentRepo.GetById(3));
     productsRepo.GetById(1).AddProductionComponent(componentRepo.GetById(4));
-    productsRepo.Add(new Product("AKG2234PSU", "AKG lo-voltage PSUv.34"));
+    productsRepo.Add(new Product("BKG2247PSU", "AKG lo-voltage PSUv.34"));
     productsRepo.GetById(2).AddProductionComponent(componentRepo.GetById(2));
     productsRepo.GetById(2).AddProductionComponent(componentRepo.GetById(3));
     productsRepo.GetById(2).AddProductionComponent(componentRepo.GetById(4));

@@ -14,7 +14,7 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
     }
     public T GetById(int id)
     {
-        return _items[id-1];
+        return _items[id - 1];
     }
     public void Remove(T item)
     {

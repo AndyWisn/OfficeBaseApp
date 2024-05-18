@@ -16,7 +16,7 @@
         {
             get
             {
-                string stringList = null;
+                string stringList = "";
                 if (this.productionComponents.Count>0)
                 {
                     for (int i = 0; i < this.productionComponents.Count - 1; i++)

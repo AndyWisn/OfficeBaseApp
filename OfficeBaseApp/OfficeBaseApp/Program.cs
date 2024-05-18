@@ -3,88 +3,66 @@ using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Data;
 using Microsoft.EntityFrameworkCore;
 
+//Add customers, vendors, Wholesalers (customer), Components & products to list repositories
 var customerListRepository = new ListRepository<Customer>();
 var vendorListRepository = new ListRepository<Vendor>();
 var componentListRepository = new ListRepository<Component>();
 var productListRepository = new ListRepository<Product>();
 
-//Adding customers, vendors, Wholesalers (customer), Components & products to list repositories
-
-AddCustomers(customerListRepository);
-AddVendor(vendorListRepository);
-AddWholesaler(customerListRepository);
-AddComponent(componentListRepository, vendorListRepository);
-AddProduct(productListRepository, componentListRepository);
-
-//Print List repositories
 Console.WriteLine("\nTest List repositories:");
+AddCustomers(customerListRepository);
+AddWholesaler(customerListRepository);
 WriteAllToConsole(customerListRepository);
+
+AddVendor(vendorListRepository);
 WriteAllToConsole(vendorListRepository);
+
+AddComponent(componentListRepository, vendorListRepository);
 WriteAllToConsole(componentListRepository);
+
+AddProduct(productListRepository, componentListRepository);
 WriteAllToConsole(productListRepository);
+
 
 //Test item removing from list repositories
+Console.WriteLine("\nTest List repositories after item remove:");
 customerListRepository.Remove(customerListRepository.GetById(1));
 customerListRepository.Remove(customerListRepository.GetById(2));
+WriteAllToConsole(customerListRepository);
+
 vendorListRepository.Remove(vendorListRepository.GetById(1));
 vendorListRepository.Remove(vendorListRepository.GetById(2));
+WriteAllToConsole(vendorListRepository);
+
 componentListRepository.Remove(componentListRepository.GetById(1));
 componentListRepository.Remove(componentListRepository.GetById(2));
-productListRepository.GetById(1).RemoveProductionComponent(4));
-//productListRepository.Remove(productListRepository.GetById(1));
-
-Console.WriteLine("\nTest List repositories after item remove:");
-WriteAllToConsole(customerListRepository);
-WriteAllToConsole(vendorListRepository);
 WriteAllToConsole(componentListRepository);
+
+productListRepository.GetById(1).RemoveProductionComponent(2);
+productListRepository.Remove(productListRepository.GetById(2));
 WriteAllToConsole(productListRepository);
 
 
 
 
+//Add customers, vendors, Wholesalers (customer), Components & products to Sql repositories
+var customerRepository = new SqlRepository<Customer>(new OfficeBaseAppDbContext<Customer>());
+var vendorRepository = new SqlRepository<Vendor>(new OfficeBaseAppDbContext<Vendor>());
+var componentRepository = new SqlRepository<Component>(new OfficeBaseAppDbContext<Component>());
+var productRepository = new SqlRepository<Product>(new OfficeBaseAppDbContext<Product>());
 
-//var customerRepository = new SqlRepository<Customer>(new OfficeBaseAppDbContext<Customer>());
-//var vendorRepository = new SqlRepository<Vendor>(new OfficeBaseAppDbContext<Vendor>());
-//var componentRepository = new SqlRepository<Component>(new OfficeBaseAppDbContext<Component>());
-//var productRepository = new SqlRepository<Product>(new OfficeBaseAppDbContext<Product>());
+Console.WriteLine("\nTest EntityFramework Sql repositories:");
+AddCustomers(customerRepository);
+AddWholesaler(customerRepository);
+WriteAllToConsole(customerRepository);
 
-//Adding customers, vendors, Wholesalers (customer), Components & products to Sql repositories
-//AddCustomers(customerRepository);
-//AddVendor(vendorRepository);
-//AddWholesaler(customerRepository);
-//AddComponent(componentRepository, vendorRepository);
-//AddProduct(productRepository, componentRepository);
+AddVendor(vendorRepository);
+WriteAllToConsole(vendorRepository);
 
-//Print SQL repositories
-//Console.WriteLine("\nTest EntityFramework Sql repositories:");
-//WriteAllToConsole(customerRepository);
-//WriteAllToConsole(vendorRepository);
-//WriteAllToConsole(componentRepository);
-//WriteAllToConsole(productRepository);
-
-
-////Test item removing from sql repositories
-//customerRepository.Remove(customerRepository.GetById(1));
-//customerRepository.Remove(customerRepository.GetById(2));
-//customerRepository.Save();
-
-//vendorRepository.Remove(vendorRepository.GetById(1));
-//vendorRepository.Remove(vendorRepository.GetById(2));
-//vendorRepository.Save();
-
-//componentRepository.Remove(componentRepository.GetById(1));
-//componentRepository.Remove(componentRepository.GetById(2));
-//componentRepository.Save();
-
-//productRepository.Remove(productRepository.GetById(1));
-//productRepository.Save();
-
-//Console.WriteLine("\nTest EntityFramework Sql repositories after item remove:");
-//WriteAllToConsole(customerRepository);
-//WriteAllToConsole(vendorRepository);
-//WriteAllToConsole(componentRepository);
-//WriteAllToConsole(productRepository);
-
+AddComponent(componentRepository, vendorRepository);
+WriteAllToConsole(componentRepository);
+AddProduct(productRepository, componentRepository);
+WriteAllToConsole(productRepository);
 
 
 
@@ -97,15 +75,14 @@ static void AddCustomers(IRepository<Customer> customerRepo)
     customerRepo.Add(new Customer ("Microchip (UK)","Barry","Moore","+44123123123" ));
     customerRepo.Save();
 }
-
 static void AddVendor(IRepository<Vendor> vendorRepo)
 {
     vendorRepo.Add(new Vendor ("Siemens A.G.","John","Ribena","+4256453123123","CE","+421564563123"));
     vendorRepo.Add(new Vendor ("Star Inc..","Cris","Cornell","+454233123123","CE, FCC","+45654423123" ));
     vendorRepo.Add(new Vendor ("Molex","Alan","Wider","+47532123123","CE, RoHS","+47133456423"));
+    vendorRepo.Add(new Vendor("Mean-Well", "Ali", "Chang", "+47532123123", "CE, ,FCC, RoHS", "+4345656423"));
     vendorRepo.Save();
 }
-
 static void AddWholesaler(IRepository<Customer> customerRepo)
 {
     customerRepo.Add(new Wholesaler("ABB Corp.","","","+482342634543"));
@@ -114,17 +91,14 @@ static void AddWholesaler(IRepository<Customer> customerRepo)
     customerRepo.Add(new Wholesaler("Rutimex","","", "+481223431123"));
     customerRepo.Save();
 }
-
 static void AddComponent(IRepository<Component> componentsRepo, IRepository<Vendor> vendorsRepo)
-{
-    
+{    
     componentsRepo.Add(new Component("LM234",vendorsRepo.GetById(1),14.45f,"Converter" ));
     componentsRepo.Add(new Component("AXT435",vendorsRepo.GetById(2),23.43f,"Connector" ));
-    componentsRepo.Add(new Component("IRM20-5",vendorsRepo.GetById(2),123.40f,"AC/DC module"));
-    componentsRepo.Add(new Component("CVB2423234",vendorsRepo.GetById(3),0.21f,"Filter" ));
+    componentsRepo.Add(new Component("IRM20-5",vendorsRepo.GetById(3),123.40f,"AC/DC module"));
+    componentsRepo.Add(new Component("CVB2423234",vendorsRepo.GetById(4),0.21f,"Filter" ));
     componentsRepo.Save();
 }
-
 static void AddProduct(IRepository<Product> productsRepo, IRepository<Component> componentRepo)
 {
     productsRepo.Add(new Product("AKG1234PSU","AKG hi-voltage PSUv.34"));
@@ -132,6 +106,10 @@ static void AddProduct(IRepository<Product> productsRepo, IRepository<Component>
     productsRepo.GetById(1).AddProductionComponent(componentRepo.GetById(2));
     productsRepo.GetById(1).AddProductionComponent(componentRepo.GetById(3));
     productsRepo.GetById(1).AddProductionComponent(componentRepo.GetById(4));
+    productsRepo.Add(new Product("AKG2234PSU", "AKG lo-voltage PSUv.34"));
+    productsRepo.GetById(2).AddProductionComponent(componentRepo.GetById(2));
+    productsRepo.GetById(2).AddProductionComponent(componentRepo.GetById(3));
+    productsRepo.GetById(2).AddProductionComponent(componentRepo.GetById(4));
     productsRepo.Save();
 }
 
@@ -143,3 +121,6 @@ static void WriteAllToConsole(IReadRepository<IEntity> genericRepository)
         Console.WriteLine(item);
     }
 }
+
+
+

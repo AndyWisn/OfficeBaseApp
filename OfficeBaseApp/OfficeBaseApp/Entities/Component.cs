@@ -10,8 +10,7 @@
             this.Name = name;
             this.ComponentsVendor = vendor;
             this.Description = descryption;
-            if (price == float.NaN) { this.Price = 0; }
-            else { this.Price = price; }
+            this.Price = price; 
         }
         public Vendor ComponentsVendor { get; set; }
         public float Price { get; set; }

@@ -1,12 +1,6 @@
 ﻿namespace OfficeBaseApp.Entities;
 public abstract class BusinessPartnersBase : IEntity
 {
-    public BusinessPartnersBase()
-    {
-    }
-    public BusinessPartnersBase(string name)
-    {
-    }
     public int Id { get; set; } 
     public string? Name { get; set; } 
     public string? RepresentativeFirstName { get; set; }

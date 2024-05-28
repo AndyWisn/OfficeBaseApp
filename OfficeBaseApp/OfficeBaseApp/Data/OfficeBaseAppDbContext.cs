@@ -15,14 +15,14 @@ public class OfficeBaseAppDbContext : DbContext
     {
         //this.Database.EnsureDeleted();
         this.Database.EnsureCreated();
-        this.SaveChanges();
+        //this.SaveChanges();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=OfficeBaseAppDb3;Trusted_Connection=True;ConnectRetryCount=0");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=OfficeBaseApp;Trusted_Connection=True;ConnectRetryCount=0");
         }
     }
 

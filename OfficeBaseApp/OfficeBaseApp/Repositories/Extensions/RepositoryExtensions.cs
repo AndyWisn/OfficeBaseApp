@@ -1,7 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿namespace OfficeBaseApp.Repositories.Extensions; 
+using Microsoft.IdentityModel.Tokens;
 using OfficeBaseApp.Entities;
-
-namespace OfficeBaseApp.Repositories.Extensions;
 
 public static class RepositoryExtensions
 {
@@ -52,5 +51,6 @@ public static class RepositoryExtensions
             Console.WriteLine(item);
         }
     }
-
 }
+
+ 

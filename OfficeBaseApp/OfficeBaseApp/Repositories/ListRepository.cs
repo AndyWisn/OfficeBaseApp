@@ -6,17 +6,11 @@ using System.Reflection;
 using System.Text.Json;
 
 public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
-{
-
+{  
     private readonly List<T> _items = new();
-
     public event EventHandler<T> ItemAdded;
     public event EventHandler<T> ItemRemoved;
-
     private string FileName = null;
-
-
-  
     public IEnumerable<T> GetAll()
     {
         return _items.ToList();
@@ -42,7 +36,8 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
                 id = item.Id;
             }
         }
-        return _items[id - 1];
+        if (id > 0) return _items[id-1];
+        else return null;
     }
     public void Remove(T item)
     {

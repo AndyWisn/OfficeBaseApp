@@ -1,19 +1,16 @@
 ﻿namespace OfficeBaseApp.Repositories;
-
 using OfficeBaseApp.Entities;
 using Microsoft.EntityFrameworkCore;
 using OfficeBaseApp.Data;
-
 public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
 {
     private readonly DbSet<T> _dbSet;
     private readonly OfficeBaseAppDbContext _dbContext;
-
+    
     public SqlRepository(OfficeBaseAppDbContext dbContext)
     {
         _dbContext = dbContext;
         _dbSet = _dbContext.Set<T>();
-
     }
 
     public event EventHandler<T> ItemAdded;
@@ -29,12 +26,10 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         return _dbSet.ToList();
     }
-
     public T? GetItem(int id)
     {
         return _dbSet.Find(id);
     }
-
     public T? GetItem(string name)
     {
         var id = 0;

@@ -26,7 +26,7 @@ public static class RepositoryExtensions
         {
             if (!sender.GetType().Name.IsNullOrEmpty())
             {
-                Console.WriteLine($"{e.GetType().Name} {e.Name} added from {sender?.GetType().Name.Remove(sender.GetType().Name.Length - 2)}");
+                Console.WriteLine($"{e.GetType().Name} {e.Name} added to {sender?.GetType().Name.Remove(sender.GetType().Name.Length - 2)}");
                 writer.WriteLine($"{DateTime.Now} ---> {e.GetType().Name} {e.Name} added to {sender?.GetType().Name.Remove(sender.GetType().Name.Length - 2)}");
             }
         }

@@ -1,21 +1,18 @@
 ﻿namespace OfficeBaseApp;
-
 using OfficeBaseApp.Entities;
 using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Data;
 using OfficeBaseApp.Repositories.Extensions;
-using OfficeBaseApp;
-using System.ComponentModel.Design;
+using System.Reflection;
 
 public static class TextMenu
 {
     delegate void MenuItemAction();
     static Dictionary<(int, int), MenuItemAction> menuActionMap = new Dictionary<(int, int), MenuItemAction>();
 
-
     static List<List<string>> menu = new List<List<string>>()
     {
-        new List<string> { "Create/restore SQL Base seeded with sample data", "Seed sample data to Json files", "List/Edit SQL repository", "Load/List/Edit Memory Repository", "Exit" },
+        new List<string> { "Create/restore SQL Base seeded sample data", "Seed sample data to Json files", "SQL repository", "Memory Repository", "Exit" },
         new List<string> { "Customers", "Vendors", "Components", "Products", "<-Back" },
         new List<string> { "Load", "Print", "Add", "Remove", "<-Back" }
     };
@@ -23,12 +20,11 @@ public static class TextMenu
     static int menuLevel = 0;
     static List<int> menuPath = new List<int>();
 
-
     public static void MenuStart()
     {
 
         Console.CursorVisible = false;
-
+        InitializeMenuActionMap();
 
         while (true)
         {
@@ -37,31 +33,19 @@ public static class TextMenu
             RunOption();
         }
     }
-
     public static void InitializeMenuActionMap()
     {
         menuPath.Add(0);
-        menuActionMap[(0, 0)] = () => HandleMenuOption00(InitRepositories.customerRepository,
-                                                         InitRepositories.vendorRepository,
-                                                         InitRepositories.componentRepository,
-                                                         InitRepositories.productRepository
-                                                         );
-        menuActionMap[(0, 1)] = () => HandleMenuOption01(InitRepositories.customerListRepository,
-                                                         InitRepositories.vendorListRepository,
-                                                         InitRepositories.componentListRepository,
-                                                         InitRepositories.productListRepository
-                                                         );
-        menuActionMap[(0, 2)] = HandleMenuOptionGoDeeper;
-        menuActionMap[(0, 3)] = HandleMenuOptionGoDeeper;
+        menuActionMap[(0, 0)] = () => ResetDatabase(InitRepositories.customerRepository, InitRepositories.vendorRepository, InitRepositories.componentRepository, InitRepositories.productRepository);
+        menuActionMap[(0, 1)] = () => ResetJsonFiles(InitRepositories.customerListRepository, InitRepositories.vendorListRepository, InitRepositories.componentListRepository, InitRepositories.productListRepository);
+        menuActionMap[(0, 2)] = MenuGoDeeper;
+        menuActionMap[(0, 3)] = MenuGoDeeper;
         menuActionMap[(0, 4)] = () => Environment.Exit(0);
-
-        menuActionMap[(1, 0)] = RepositorySelectMenu;                                                 // select repository type menu
-        menuActionMap[(1, 1)] = RepositorySelectMenu;                                                 // select repository type menu
-        menuActionMap[(1, 2)] = RepositorySelectMenu;                                                 // select repository type menu
-        menuActionMap[(1, 3)] = RepositorySelectMenu;                                                // select repository type menu
+        menuActionMap[(1, 0)] = MenuGoDeeper;
+        menuActionMap[(1, 1)] = MenuGoDeeper;
+        menuActionMap[(1, 2)] = MenuGoDeeper;
+        menuActionMap[(1, 3)] = MenuGoDeeper;
         menuActionMap[(1, 4)] = HandleMenuOptionBack;
-
-
         menuActionMap[(2, 0)] = () =>                                                                 // Load from SqlDataBase (check if base is connected, create if not).
             {
                 if (menuPath[0] == 2)
@@ -198,9 +182,197 @@ public static class TextMenu
             }
         };
 
-        menuActionMap[(2, 2)] = HandleMenuOptionDoNothing;                                              //Add item to repository option
+        menuActionMap[(2, 2)] = () =>
+        {
+            if (menuPath[0] == 2)
+            {
+                switch (menuPath[1])
+                {
+                    case 0:
+                        {
+                            PrintRepository(InitRepositories.customerRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Customer to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter representative's name:");
+                            string? repName = Console.ReadLine();
+                            Console.WriteLine("Enter representative's surname:");
+                            string? repSurname = Console.ReadLine();
+                            Console.WriteLine("Enter contact:");
+                            string? contact = Console.ReadLine();
+                            var item = new Customer(name, repName, repSurname, contact);
+                            InitRepositories.customerRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.customerRepository);
+                            break;
+                        }
+                    case 1:
+                        {
+                            PrintRepository(InitRepositories.vendorRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Vendor to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter representative's name:");
+                            string? repName = Console.ReadLine();
+                            Console.WriteLine("Enter representative's surname:");
+                            string? repSurname = Console.ReadLine();
+                            Console.WriteLine("Enter contact:");
+                            string? contact = Console.ReadLine();
+                            Console.WriteLine("Enter certificates:");
+                            string? certificates = Console.ReadLine();
+                            Console.WriteLine("Enter support contact:");
+                            string? support = Console.ReadLine();
+                            var item = new Vendor(name, repName, repSurname, contact, certificates, support);
+                            InitRepositories.vendorRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.vendorRepository);
+                            break;
+                        }
+                    case 2:
+                        {
+                            PrintRepository(InitRepositories.componentRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Component to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter price:");
+                            string? price = Console.ReadLine();
+                            Console.WriteLine("Enter desciption:");
+                            string? description = Console.ReadLine();
+                            Console.WriteLine("Enter vendor ID:");
+                            int.TryParse(Console.ReadLine(), out int vendorId);
+                            var item = new Component(name, price, description, vendorId);
+                            InitRepositories.componentRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.componentRepository);
+                            break;
+                        }
+                    case 3:
+                        {
+                            PrintRepository(InitRepositories.productRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Product to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter descryption:");
+                            string? description = Console.ReadLine();
+                            Console.WriteLine("Enter components IDs like 1,2,3,4:");
+                            string? components = Console.ReadLine();
+                            List<int> componentList = components.Split(',').Select(int.Parse).ToList();
+                            var item = new Product(name, description, componentList);
+                            InitRepositories.productRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.productRepository);
+                            break;
+                        }
+                }
+            }
+            else if (menuPath[0] == 3)
+            {
+                switch (menuPath[1])
+                {
+                    case 0:
+                        {
+                            PrintRepository(InitRepositories.customerListRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Customer to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter representative's name:");
+                            string? repName = Console.ReadLine();
+                            Console.WriteLine("Enter representative's surname:");
+                            string? repSurname = Console.ReadLine();
+                            Console.WriteLine("Enter contact:");
+                            string? contact = Console.ReadLine();
+                            var item = new Customer(name, repName, repSurname, contact);
+                            InitRepositories.customerListRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.customerListRepository);
+                            break;
+                        }
 
-        menuActionMap[(2, 4)] = HandleMenuOptionBack;                                                   // Back Menu Option
+                    case 1:
+                        {
+                            PrintRepository(InitRepositories.vendorListRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Vendor to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter representative's name:");
+                            string? repName = Console.ReadLine();
+                            Console.WriteLine("Enter representative's surname:");
+                            string? repSurname = Console.ReadLine();
+                            Console.WriteLine("Enter contact:");
+                            string? contact = Console.ReadLine();
+                            Console.WriteLine("Enter certificates:");
+                            string? certificates = Console.ReadLine();
+                            Console.WriteLine("Enter support contact:");
+                            string? support = Console.ReadLine();
+                            var item = new Vendor(name, repName, repSurname, contact, certificates, support);
+                            InitRepositories.vendorListRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.vendorListRepository);
+                            break;
+                        }
+                    case 2:
+                        {
+                            PrintRepository(InitRepositories.componentListRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Component to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter price:");
+                            string? price = Console.ReadLine();
+                            Console.WriteLine("Enter desciption:");
+                            string? description = Console.ReadLine();
+                            Console.WriteLine("Enter vendor ID:");
+                            int.TryParse(Console.ReadLine(), out int vendorId);
+                            var item = new Component(name, price, description, vendorId);
+                            InitRepositories.componentListRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.componentListRepository);
+                            break;
+                        }
+                    case 3:
+                        {
+                            PrintRepository(InitRepositories.productListRepository);
+                            Console.WriteLine();
+                            Console.WriteLine($"Add new Product to repository:");
+                            Console.WriteLine();
+                            Console.CursorVisible = true;
+                            Console.WriteLine("Enter name:");
+                            string? name = Console.ReadLine();
+                            Console.WriteLine("Enter descryption:");
+                            string? description = Console.ReadLine();
+                            Console.WriteLine("Enter components IDs like 1,2,3,4:");
+                            string? components = Console.ReadLine();
+                            List<int> componentList = components.Split(',').Select(int.Parse).ToList();
+                            var item = new Product(name, description, componentList);
+                            InitRepositories.productListRepository.Add(item);
+                            Console.CursorVisible = false;
+                            PrintRepository(InitRepositories.productListRepository);
+                            break;
+                        }
+                }
+            }
+        };
+        menuActionMap[(2, 4)] = HandleMenuOptionBack;
     }
     public static void PrintMenu()
     {
@@ -270,16 +442,22 @@ public static class TextMenu
         (int, int) position = Console.GetCursorPosition();
         Console.SetCursorPosition(0, menu[menuLevel].Count + 5);
 
-        Console.Write($" Actual menu path:");
+        Console.Write($"Menu path: ");
         foreach (var item in menuPath)
         {
             Console.Write(item);
         }
+        Console.Write("->");
+        for (var i = 0; i < menuPath.Count; i++)
+        {
+            Console.Write($"{menu[i][menuPath[i]]}\\");
+        }
+
+        
+
         Console.SetCursorPosition(position.Item1, position.Item2);
     }
-    public static void HandleMenuOptionDoNothing()
-    { }
-    public static void HandleMenuOption00(SqlRepository<Customer> customerRepo, SqlRepository<Vendor> vendorRepo, SqlRepository<Component> componentRepo, SqlRepository<Product> productRepo)                                        //Initialize Json files with sample data                
+    public static void ResetDatabase(SqlRepository<Customer> customerRepo, SqlRepository<Vendor> vendorRepo, SqlRepository<Component> componentRepo, SqlRepository<Product> productRepo)                                        //Initialize Json files with sample data                
     {
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine("==> Deleting old SQL Base and init sample data again.");
@@ -295,7 +473,7 @@ public static class TextMenu
         Console.WriteLine("<Press any key to continue>");
         Console.ReadKey();
     }
-    public static void HandleMenuOption01(ListRepository<Customer> customerRepo, ListRepository<Vendor> vendorRepo, ListRepository<Component> componentRepo, ListRepository<Product> productRepo)                                        //Initialize Json files with sample data                
+    public static void ResetJsonFiles(ListRepository<Customer> customerRepo, ListRepository<Vendor> vendorRepo, ListRepository<Component> componentRepo, ListRepository<Product> productRepo)                                        //Initialize Json files with sample data                
     {
         Console.WriteLine();
         InitSampleData.AddCustomers(customerRepo);
@@ -309,33 +487,30 @@ public static class TextMenu
         Console.WriteLine("<Press any key to continue>");
         Console.ReadKey();
     }
-    public static void LoadListRepository<T>(ListRepository<T> repo) where T : class, IEntity, new()                                        //Load List repository                   
+    public static void LoadListRepository<T>(ListRepository<T> repo) where T : class, IEntity, new()
     {
         repo.LoadJson();
         Console.WriteLine();
         Console.WriteLine("<Press any key to continue>");
         Console.ReadKey();
     }
-    public static void PrintRepository<T>(IRepository<T> Repo) where T : class, IEntity, new()                                               //Print List repository                
+    public static void PrintRepository<T>(IRepository<T> Repo) where T : class, IEntity, new()
     {
+        Console.WriteLine();
         Repo.WriteAllToConsole();
         Console.WriteLine();
         Console.WriteLine("<Press any key to continue>");
         Console.ReadKey();
     }
-    public static void RepositorySelectMenu()                                                                                                //Select repository repository                
-    {
-        //Console.WriteLine();
-        menuLevel++;
-        actualItem = 0;
-        menuPath.Add(actualItem);
-    }
     public static void RemoveItemFromRepository<T>(IRepository<T> repo) where T : class, IEntity, new()
     {
         PrintRepository(repo);
         Console.WriteLine();
+        Console.WriteLine($"Remove {typeof(T).Name} from repository {repo.GetType().Name.Remove(repo.GetType().Name.Length - 2)}");
         Console.WriteLine("Enter the item's name or Id number: ");
+        Console.CursorVisible = true;
         var itemName = Console.ReadLine();
+        Console.CursorVisible = false;
         if (itemName != null)
         {
             if (repo.GetItem(itemName) != null)
@@ -351,7 +526,7 @@ public static class TextMenu
             }
             else
             {
-                Console.WriteLine("Sorry no item with such name nor Id.");
+                Console.WriteLine("Sorry, there's no item with such a name nor Id.");
             }
         }
         PrintRepository(repo);
@@ -362,7 +537,7 @@ public static class TextMenu
         actualItem = menu[menuLevel].Count - 1;
         if (menuPath.Count > 0) { menuPath.RemoveAt(menuPath.Count - 1); }
     }
-    public static void HandleMenuOptionGoDeeper()
+    public static void MenuGoDeeper()
     {
         menuLevel++;
         actualItem = 0;

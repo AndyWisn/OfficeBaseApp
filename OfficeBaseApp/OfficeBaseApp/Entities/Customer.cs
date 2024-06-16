@@ -11,5 +11,24 @@ public class Customer : BusinessPartnersBase
         this.RepresentativeLastName = representativeLastName;
         this.Contact = contact;
     }
+
+    public Customer EnterPropertiesFromConsole()
+    { 
+        Console.WriteLine();
+        Console.WriteLine($"Add new Customer to repository:");
+        Console.WriteLine();
+        Console.CursorVisible = true;
+        Console.WriteLine("Enter name:");
+        string? name = Console.ReadLine();
+        Console.WriteLine("Enter representative's name:");
+        string? repName = Console.ReadLine();
+        Console.WriteLine("Enter representative's surname:");
+        string? repSurname = Console.ReadLine();
+        Console.WriteLine("Enter contact:");
+        string? contact = Console.ReadLine();
+        Console.CursorVisible = false;
+        return new Customer(name, repName, repSurname, contact);
+    }
+
     public override string ToString() => string.Format("{0,-14}", "Customer  ") + base.ToString();
 }

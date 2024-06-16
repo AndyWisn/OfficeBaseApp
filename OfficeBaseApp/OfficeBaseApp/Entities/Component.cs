@@ -30,6 +30,24 @@ public class Component : TradeGoodsBase
         }
     }
 
+    public Component EnterPropertiesFromConsole()
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Add new Component to repository:");
+        Console.WriteLine();
+        Console.CursorVisible = true;
+        Console.WriteLine("Enter name:");
+        string? name = Console.ReadLine();
+        Console.WriteLine("Enter price:");
+        string? price = Console.ReadLine();
+        Console.WriteLine("Enter desciption:");
+        string? description = Console.ReadLine();
+        Console.WriteLine("Enter vendor ID:");
+        int.TryParse(Console.ReadLine(), out int vendorId);
+        Console.CursorVisible = false;
+        return new Component(name, price, description, vendorId);
+    }
+
     public int ComponentVendorId { get; set; }
     public float Price { get; set; }
 

@@ -1,15 +1,13 @@
-﻿namespace OfficeBaseApp.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
 using OfficeBaseApp.Entities;
-
+namespace OfficeBaseApp.Data;
 
 public class OfficeBaseAppDbContext : DbContext
 {
-    public DbSet<Component> Components => Set<Component>();
     public DbSet<Customer> Customers => Set<Customer>();
-    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Component> Components => Set<Component>();
     public DbSet<Vendor> Vendors => Set<Vendor>();
+    public DbSet<Product> Products => Set<Product>();
 
     public OfficeBaseAppDbContext()
     {
@@ -29,7 +27,7 @@ public class OfficeBaseAppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        
         modelBuilder.Entity<Customer>().ToTable("Customers");
         modelBuilder.Entity<Vendor>().ToTable("Vendors");
         modelBuilder.Entity<Component>().ToTable("Components");

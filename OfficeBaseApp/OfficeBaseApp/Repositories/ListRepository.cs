@@ -1,8 +1,5 @@
 ﻿namespace OfficeBaseApp.Repositories;
-
-using Microsoft.EntityFrameworkCore;
 using OfficeBaseApp.Entities;
-using System.Reflection;
 using System.Text.Json;
 
 public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
@@ -40,7 +37,7 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
         else return null;
     }
     public void Remove(T item)
-    {
+    {     
         _items.Remove(item);
         ItemRemoved?.Invoke(this, item);
     }
@@ -73,10 +70,9 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
                     var json = JsonSerializer.Serialize<T>(item);
                     writer.WriteLine(json);
                 }
-             }
+            }
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine();
         }
-
     }            
 }

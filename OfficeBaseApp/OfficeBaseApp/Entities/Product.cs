@@ -43,6 +43,21 @@
         }
         set { }
     }
-    
+    public Product EnterPropertiesFromConsole()
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Add new Product to repository:");
+        Console.WriteLine();
+        Console.CursorVisible = true;
+        Console.WriteLine("Enter name:");
+        string? name = Console.ReadLine();
+        Console.WriteLine("Enter descryption:");
+        string? description = Console.ReadLine();
+        Console.WriteLine("Enter components IDs like 1,2,3,4:");
+        string? components = Console.ReadLine();
+        List<int> componentList = components.Split(',').Select(int.Parse).ToList();
+        Console.CursorVisible = false;
+        return new Product(name, description, componentList);
+    }
     public override string ToString() => string.Format("{0,-13} {1,30} {2,12} {3,10}", "Product", base.ToString(), "|Components:", this.ComponentListInString);
 }

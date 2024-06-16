@@ -27,17 +27,7 @@ internal static class InitSampleData
         };
         vendorRepo.AddBatch(vendors);
     }
-    internal static void AddWholesalers(IRepository<Customer> customerRepo)
-    {
-        Wholesaler[] wholesalers = new[]
-        {
-                new Wholesaler("ABB Corp.", "", "", "+482342634543"),
-                new Wholesaler("Dellscape", "", "", "+481232594423"),
-                new Wholesaler("Fine Inc.", "", "", "+481231563123"),
-                new Wholesaler("Rutimex", "", "", "+481223431123")
-        };
-        customerRepo.AddBatch(wholesalers);
-    }
+   
     internal static void AddComponents(IRepository<Component> componentsRepo)
     {
         Component[] components = new[]

@@ -1,5 +1,5 @@
 ﻿namespace OfficeBaseApp;
-public interface ITextMenu
+public interface IApp
 {
     void Run();
 }

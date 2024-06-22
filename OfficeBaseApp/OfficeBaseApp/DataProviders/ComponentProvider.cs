@@ -136,7 +136,7 @@ public class ComponentProvider : IComponentProvider
     public Component SingleOrDefualtById(int id)
     {
         var components = _componentRepository.GetAll();
-        return components.SingleOrDefault(x => x.Id == id);
+        return components.SingleOrDefault(x => x.Id == id, null);
     }
 
 

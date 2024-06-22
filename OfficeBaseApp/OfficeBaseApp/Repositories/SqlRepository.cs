@@ -28,19 +28,24 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     }
     public T? GetItem(int id)
     {
-        return _dbSet.Find(id);
+        //return _dbSet.Find(id);
+
+        return _dbSet.SingleOrDefault(x => x.Id == id, null);
+
     }
     public T? GetItem(string name)
     {
-        var id = 0;
-        foreach (var item in _dbSet)
-        {
-            if (item.Name == name)
-            {
-                id = item.Id;
-            }
-        }
-        return _dbSet.Find(id);
+        //var id = 0;
+        //foreach (var item in _dbSet)
+        //{
+        //    if (item.Name == name)
+        //    {
+        //        id = item.Id;
+        //    }
+        //}
+        //return _dbSet.Find(id);
+
+        return _dbSet.FirstOrDefault(x => x.Name == name, null);
     }
     public void Remove(T item)
     {

@@ -3,7 +3,7 @@ using OfficeBaseApp.Entities;
 using System.Text.Json;
 
 public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
-{  
+{
     private readonly List<T> _items = new();
     public event EventHandler<T> ItemAdded;
     public event EventHandler<T> ItemRemoved;
@@ -18,26 +18,40 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
         _items.Add(item);
         ItemAdded?.Invoke(this, item);
     }
+
     public T? GetItem(int id)
     {
-        return _items[id - 1];
+        //    T selectedItem = null;
+        //    foreach (var item in _items)
+        //    {
+        //        if (item.Id == id)
+        //        {
+        //            selectedItem=item;
+        //        }
+
+        //    }
+        //    return selectedItem;
+
+        return _items.SingleOrDefault(x => x.Id == id, null);
     }
 
     public T? GetItem(string name)
     {
-        var id = 0;
-        foreach (var item in _items)
-        {
-            if (item.Name == name)
-            {
-                id = item.Id;
-            }
-        }
-        if (id > 0) return _items[id-1];
-        else return null;
+        //var id = 0;
+        //foreach (var item in _items)
+        //{
+        //    if (item.Name == name)
+        //    {
+        //        id = item.Id;
+        //    }
+        //}
+        //if (id > 0) return _items[id - 1];
+        //else return null;
+                 
+        return _items.FirstOrDefault(x => x.Name ==  name, null);
     }
     public void Remove(T item)
-    {     
+    {
         _items.Remove(item);
         ItemRemoved?.Invoke(this, item);
     }
@@ -49,14 +63,14 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
             using (var reader = File.OpenText(FileName))
             {
                 string? json = null;
-                while ((json=reader.ReadLine()) != null)
+                while ((json = reader.ReadLine()) != null)
                 {
-                   Add(JsonSerializer.Deserialize<T>(json));
+                    Add(JsonSerializer.Deserialize<T>(json));
                 }
             }
         }
     }
-    public void Save() 
+    public void Save()
     {
         if (_items.Count > 0)
         {
@@ -74,5 +88,5 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine();
         }
-    }            
+    }
 }

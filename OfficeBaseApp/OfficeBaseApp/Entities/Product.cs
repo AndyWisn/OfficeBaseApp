@@ -1,4 +1,6 @@
-﻿namespace OfficeBaseApp.Entities;
+﻿using Microsoft.IdentityModel.Tokens;
+
+namespace OfficeBaseApp.Entities;
     public class Product : TradeGoodsBase
 {
     public Product()
@@ -55,7 +57,9 @@
         string? description = Console.ReadLine();
         Console.WriteLine("Enter components IDs like 1,2,3,4:");
         string? components = Console.ReadLine();
-        List<int> componentList = components.Split(',').Select(int.Parse).ToList();
+        List<int> componentList=null;
+        if (!components.IsNullOrEmpty()) { componentList = components.Split(',').Select(int.Parse).ToList(); }
+        
         Console.CursorVisible = false;
         return new Product(name, description, componentList);
     }

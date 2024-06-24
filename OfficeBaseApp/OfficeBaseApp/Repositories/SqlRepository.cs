@@ -2,7 +2,7 @@
 using OfficeBaseApp.Entities;
 using Microsoft.EntityFrameworkCore;
 using OfficeBaseApp.Data;
-public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
+public class SqlRepository<T> : ISqlRepository<T> where T : class, IEntity, new()
 {
     private readonly DbSet<T> _dbSet;
     private readonly OfficeBaseAppDbContext _dbContext;
@@ -13,20 +13,21 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
         _dbSet = _dbContext.Set<T>();
     }
 
-    public event EventHandler<T> ItemAdded;
-    public event EventHandler<T> ItemRemoved;
+    public  event EventHandler<T> ItemAdded;
+    public  event EventHandler<T> ItemRemoved;
 
-    public void Add(T item)
+
+    public  void Add(T item)
     {
         _dbSet.Add(item);
         Save();
         ItemAdded?.Invoke(this, item);
     }
-    public IEnumerable<T> GetAll()
+    public  IEnumerable<T> GetAll()
     {
         return _dbSet.ToList();
     }
-    public T? GetItem(int id)
+    public  T? GetItem(int id)
     {
         //return _dbSet.Find(id);
 
@@ -47,7 +48,25 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
 
         return _dbSet.FirstOrDefault(x => x.Name == name, null);
     }
-    public void Remove(T item)
+
+    public  void Load()
+    {
+        using (var context = new OfficeBaseAppDbContext())
+        {
+        
+            if (context.Database.CanConnect())
+            {
+                Console.WriteLine("Database connected.");
+            }
+            else if (context.Database.EnsureCreated())
+            {
+                Console.WriteLine("Database created.");
+            }
+        }
+       
+    }
+
+    public  void Remove(T item)
     {
         if (item != null)
         {
@@ -56,7 +75,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
             Save();
         }
     }
-    public void Save()
+    public  void Save()
     {
         _dbContext.SaveChanges();
     }

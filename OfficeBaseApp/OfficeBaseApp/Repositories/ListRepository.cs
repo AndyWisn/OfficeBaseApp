@@ -2,11 +2,11 @@
 using OfficeBaseApp.Entities;
 using System.Text.Json;
 
-public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
+public class ListRepository<T> : IListRepository<T> where T : class, IEntity, new()
 {
     private readonly List<T> _items = new();
-    public event EventHandler<T> ItemAdded;
-    public event EventHandler<T> ItemRemoved;
+    public  event EventHandler<T> ItemAdded;
+    public  event EventHandler<T> ItemRemoved;
     private string FileName = null;
     public IEnumerable<T> GetAll()
     {
@@ -55,7 +55,7 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
         _items.Remove(item);
         ItemRemoved?.Invoke(this, item);
     }
-    public void LoadJson()
+    public void Load()
     {
         this.FileName = typeof(T).Name + "ListRepository.json";
         if (File.Exists(FileName))

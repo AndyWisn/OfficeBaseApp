@@ -12,22 +12,21 @@ public class Customer : BusinessPartnersBase
         this.Contact = contact;
     }
 
-    public Customer EnterPropertiesFromConsole()
+    public override void EnterPropertiesFromConsole()
     { 
         Console.WriteLine();
         Console.WriteLine($"Add new Customer to repository:");
-        Console.WriteLine();
         Console.CursorVisible = true;
         Console.WriteLine("Enter name:");
-        string? name = Console.ReadLine();
+        this.Name = Console.ReadLine();
         Console.WriteLine("Enter representative's name:");
-        string? repName = Console.ReadLine();
+        this.RepresentativeFirstName = Console.ReadLine();
         Console.WriteLine("Enter representative's surname:");
-        string? repSurname = Console.ReadLine();
+        this.RepresentativeLastName = Console.ReadLine();
         Console.WriteLine("Enter contact:");
-        string? contact = Console.ReadLine();
+        this.Contact = Console.ReadLine();
         Console.CursorVisible = false;
-        return new Customer(name, repName, repSurname, contact);
+        //return new Customer(name, repName, repSurname, contact);
     }
 
     public override string ToString() => string.Format("{0,-14}", "Customer  ") + base.ToString();

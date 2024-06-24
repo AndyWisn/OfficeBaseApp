@@ -16,30 +16,25 @@ public class Vendor : BusinessPartnersBase
     }
     public string VendorCertificate { get; set; }
     public string SupportContact { get; set; }
-
-    public Vendor EnterPropertiesFromConsole()
+    public override void EnterPropertiesFromConsole()
     {
         Console.WriteLine();
         Console.WriteLine($"Add new Vendor to repository:");
-        Console.WriteLine();
         Console.CursorVisible = true;
         Console.WriteLine("Enter name:");
-        string? name = Console.ReadLine();
+        this.Name = Console.ReadLine();
         Console.WriteLine("Enter representative's name:");
-        string? repName = Console.ReadLine();
+        this.RepresentativeFirstName = Console.ReadLine();
         Console.WriteLine("Enter representative's surname:");
-        string? repSurname = Console.ReadLine();
+        this.RepresentativeLastName = Console.ReadLine();
         Console.WriteLine("Enter contact:");
-        string? contact = Console.ReadLine();
+        this.Contact = Console.ReadLine();
         Console.WriteLine("Enter certificates:");
-        string? certificates = Console.ReadLine();
+        this.VendorCertificate = Console.ReadLine();
         Console.WriteLine("Enter support contact:");
-        string? support = Console.ReadLine();
+        this.SupportContact = Console.ReadLine();
         Console.CursorVisible = false;
-        return new Vendor(name, repName, repSurname, contact, certificates, support);
-
+        //return new Vendor(name, repName, repSurname, contact, certificates, support);
     }
-
-
     public override string ToString() => string.Format("{0,-14}", "Vendor ") + base.ToString();
 }

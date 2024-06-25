@@ -6,105 +6,74 @@ using OfficeBaseApp.DataProviders.Extensions;
 
 namespace OfficeBaseApp.DataProviders;
 
-public class ComponentProviderList : IComponentProviderList
+public class ComponentProviderList : CommonDataProvider<Component>, IComponentProviderList
 {
-    private readonly IListRepository<Component> repository;
+    private readonly IListRepository<Component> _repository;
 
-    public ComponentProviderList(IListRepository<Component> componentRepository)
+    public ComponentProviderList(IListRepository<Component> repository) : base(repository)
     {
-        repository = componentRepository;
+        _repository = repository;
     }
 
-    public List<string> GetUniqueNames()
+    public float GetMinimumPriceOfAllComponents()
     {
-        var components = repository.GetAll();
-        var names = components.Select(x => x.Name).Distinct().ToList();
-        return names;
+        var components = _repository.GetAll();
+        return components.Select(x => x.Price).Min();
     }
+
+    public List<Component> GetSpecificColumns()
+    {
+        var components = _repository.GetAll();
+        var list = components.Select(component => new Component
+        {
+            Name = component.Name,
+            Description = component.Description,
+            Price = component.Price
+        }).ToList();
+        return list;
+    }
+    public string AnonymousClass()
+    {
+        var components = _repository.GetAll();
+        var list = components.Select(component => new
+        {
+            Identifier = component.Id,
+            ProductName = component.Name,
+            ProductType = component.Description
+        });
+        StringBuilder sb = new(2048);
+        foreach (var component in list)
+        {
+            sb.AppendLine($"Product ID: {component.Identifier}");
+            sb.AppendLine($"Product Name: {component.ProductName}");
+            sb.AppendLine($"Product Size: {component.ProductType}");
+        }
+        return sb.ToString();
+    }
+
+    public List<Component> OrderByNameAndPrice()
+    {
+        var components = _repository.GetAll();
+        return components
+            .OrderBy(x => x.Price)
+            .ThenBy(x => x.Name)
+            .ToList();
+    }
+
+
 }
 
-    //public List<string> GetUniqueComponentNames()
-    //{
-    //    var components = repository.GetAll();
-    //    var names = components.Select(x => x.Name).Distinct().ToList();
-    //    return names;
-    //}
-
-    //public ComponentProvider(ISqlRepository<Component> componentSqlRepository)
-    //{
-    //    _componentSqlRepository = componentSqlRepository;
-
-    //}
-
-
-    //public float GetMinimumPriceOfAllComponents()
-    //{
-    //    var components = repository.GetAll();
-    //    return components.Select(x => x.Price).Min();
-    //}
-
-//    public List<string> GetUniqueNames()
-//    {
-//        var items = repository.GetAll();
-//        var names = items.Select(x => x.Name).ToList();
-//        return names;
-//    }
 
 
 
-//    public List<Component> GetSpecificColumns()
-//    {
-//        var components = repository.GetAll();
-//        var list = components.Select(component => new Component
-//        {
-//            Name = component.Name,
-//            Description = component.Description,
-//            Price = component.Price
-//        }).ToList();
-//        return list;
-//    }
 
-//    public string AnonymousClass()
-//    {
-//        var components = repository.GetAll();
-//        var list = components.Select(component => new
-//        {
-//            Identifier = component.Id,
-//            ProductName = component.Name,
-//            ProductType = component.Description
-//        });
 
-//        StringBuilder sb = new(2048);
 
-//        foreach (var component in list)
-//        {
-//            sb.AppendLine($"Product ID: {component.Identifier}");
-//            sb.AppendLine($"Product Name: {component.ProductName}");
-//            sb.AppendLine($"Product Size: {component.ProductType}");
-//        }
 
-//        return sb.ToString();
-//    }
 
-//    public List<Component> OrderByName()
-//    {
-//        var components = repository.GetAll();
-//        return components.OrderBy(x => x.Name).ToList();
-//    }
-//    public List<Component> OrderByNameDescending()
-//    {
-//        var components = repository.GetAll();
-//        return components.OrderByDescending(x => x.Name).ToList();
-//    }
 
-//    public List<Component> OrderByNameAndPrice()
-//    {
-//        var components = repository.GetAll();
-//        return components
-//            .OrderBy(x => x.Price)
-//            .ThenBy(x => x.Name)
-//            .ToList();
-//    }
+
+
 
 //    public List<Component> OrderByNameAndPriceDesc()
 //    {
@@ -115,12 +84,7 @@ public class ComponentProviderList : IComponentProviderList
 //            .ToList();
 //    }
 
-//    public List<Component> WhereStartsWith(string prefix)
-//    {
-//        var components = repository.GetAll();
-//        return components.Where(x => x.Name.StartsWith(prefix)).ToList();
 
-//    }
 //    public List<Component> WhereStartsWithAndPriceIsGreatherThan(string prefix, float price)
 //    {
 //        var components = repository.GetAll();

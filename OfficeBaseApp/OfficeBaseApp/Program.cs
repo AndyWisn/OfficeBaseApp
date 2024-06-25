@@ -21,8 +21,10 @@ services.AddScoped<ISqlRepository<Product>, SqlRepository<Product>>();
 
 services.AddDbContext<OfficeBaseAppDbContext>();
 
-services.AddSingleton<IComponentProviderSql, ComponentProviderSql>();
 services.AddSingleton<IComponentProviderList, ComponentProviderList>();
+services.AddSingleton<IComponentProviderSql, ComponentProviderSql>();
+
+
 
 var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetService<IApp>()!;

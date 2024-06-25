@@ -17,7 +17,8 @@ public class App : IApp
     private readonly ISqlRepository<Component> _componentSqlRepository;
     private readonly ISqlRepository<Product> _productSqlRepository;
 
-    private readonly IComponentProviderSql _componentProvider;
+    private readonly IComponentProviderSql _componentProviderSql;
+    private readonly IComponentProviderList _componentProviderList;
     public App(IListRepository<Customer> customerRepository,
                IListRepository<Vendor> vendorRepository,
                IListRepository<Component> componentRepository,
@@ -26,7 +27,9 @@ public class App : IApp
                ISqlRepository<Vendor> vendorSqlRepository,
                ISqlRepository<Component> componentSqlRepository,
                ISqlRepository<Product> productSqlRepository,
-               IComponentProviderSql componentProvider)
+               IComponentProviderList componentProviderList,
+               IComponentProviderSql componentProviderSql)
+        
     {
 
         _customerListRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
@@ -47,7 +50,8 @@ public class App : IApp
         _productSqlRepository = productSqlRepository ?? throw new ArgumentNullException(nameof(productSqlRepository));
         _productSqlRepository.SetUp();
 
-        _componentProvider = componentProvider ?? throw new ArgumentNullException(nameof(componentProvider));
+        _componentProviderSql = componentProviderSql ?? throw new ArgumentNullException(nameof(componentProviderSql));
+        _componentProviderList = componentProviderList ?? throw new ArgumentNullException(nameof(componentProviderList));
     }
 
     public void Run()
@@ -62,15 +66,62 @@ public class App : IApp
                                       new List<string>(), new List<TextMenu.MenuItemAction>());
 
         menuObject.LoadRepository(_componentListRepository, 16);
-        var items = _componentProvider.GetUniqueNames();
-
+        var items = _componentProviderList.GetUniqueNames();
         foreach (var item in items)
         {
             Console.WriteLine(item);
 
         }
         menuObject.WaitTillKeyPressed(true);
+        Console.WriteLine();
+        Console.WriteLine($"Minimum price of all Components {_componentProviderList.GetMinimumPriceOfAllComponents()}");
+        menuObject.WaitTillKeyPressed(true);
 
+        Console.WriteLine();
+        Console.WriteLine("Get specific columns from all Components:");
+        var items1 = _componentProviderList.GetSpecificColumns();
+        foreach (var item in items1)
+        {
+            Console.WriteLine(item);
+
+        }
+        menuObject.WaitTillKeyPressed(true);
+
+        Console.WriteLine();
+        Console.WriteLine($"Anonymous class: "+_componentProviderList.AnonymousClass());
+        menuObject.WaitTillKeyPressed(true);
+
+        Console.WriteLine();
+        Console.WriteLine("Components sorted by Name:");
+        var items2 = _componentProviderList.OrderByName();
+        foreach (var item in items2)
+        {
+            Console.WriteLine(item);
+
+        }
+        menuObject.WaitTillKeyPressed(true);
+
+        Console.WriteLine();
+        Console.WriteLine("Components sorted by Name, descending:");
+        var items3 = _componentProviderList.OrderByNameDescending();
+        foreach (var item in items3)
+        {
+            Console.WriteLine(item);
+
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Components sorted by Price and then by Name:");
+        var items4 = _componentProviderList.OrderByNameAndPrice();
+        foreach (var item in items4)
+        {
+            Console.WriteLine(item);
+
+        }
+
+        menuObject.WaitTillKeyPressed(true);
+
+        
 
 
         var menuItems = new List<string>() { "Exit", "Create/restore SQL Base seeded sample data", "Seed sample data to Json files", "SQL repository", "Memory Repository" };

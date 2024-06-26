@@ -11,7 +11,6 @@ namespace OfficeBaseApp.Entities;
         this.Name = name;
         this.Description = description;
         this.ProductionComponentsId = productionComponentList;
-
     }
     public List<int> ProductionComponentsId { get; set; } = new List<int>();
     public string ComponentListInString

@@ -1,15 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OfficeBaseApp.Repositories;
+﻿using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Entities;
 using System.Text;
-using OfficeBaseApp.DataProviders.Extensions;
 
 namespace OfficeBaseApp.DataProviders;
-
 public class ComponentProviderSql : CommonDataProvider<Component>, IComponentProviderSql
 {
     private readonly ISqlRepository<Component> _repository;
-
     public ComponentProviderSql(ISqlRepository<Component> repository) : base(repository)
     {
         _repository = repository;
@@ -19,7 +15,6 @@ public class ComponentProviderSql : CommonDataProvider<Component>, IComponentPro
         var components = _repository.GetAll();
         return components.Select(x => x.Price).Min();
     }
-
     public List<Component> GetSpecificColumns()
     {
         var components = _repository.GetAll();
@@ -57,5 +52,4 @@ public class ComponentProviderSql : CommonDataProvider<Component>, IComponentPro
             .ThenBy(x => x.Name)
             .ToList();
     }
-
 }

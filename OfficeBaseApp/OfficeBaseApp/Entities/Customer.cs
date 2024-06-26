@@ -11,7 +11,6 @@ public class Customer : BusinessPartnersBase
         this.RepresentativeLastName = representativeLastName;
         this.Contact = contact;
     }
-
     public override void EnterPropertiesFromConsole()
     { 
         Console.WriteLine();

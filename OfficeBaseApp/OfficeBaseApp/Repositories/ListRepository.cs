@@ -1,12 +1,14 @@
 ﻿namespace OfficeBaseApp.Repositories;
+
+using Microsoft.Extensions.Options;
 using OfficeBaseApp.Entities;
 using System.Text.Json;
 
 public class ListRepository<T> : IListRepository<T> where T : class, IEntity, new()
 {
     private readonly List<T> _items = new();
-    public  event EventHandler<T> ItemAdded;
-    public  event EventHandler<T> ItemRemoved;
+    public event EventHandler<T> ItemAdded;
+    public event EventHandler<T> ItemRemoved;
     private string FileName = null;
     public IEnumerable<T> GetAll()
     {
@@ -18,37 +20,13 @@ public class ListRepository<T> : IListRepository<T> where T : class, IEntity, ne
         _items.Add(item);
         ItemAdded?.Invoke(this, item);
     }
-
     public T? GetItem(int id)
     {
-        //    T selectedItem = null;
-        //    foreach (var item in _items)
-        //    {
-        //        if (item.Id == id)
-        //        {
-        //            selectedItem=item;
-        //        }
-
-        //    }
-        //    return selectedItem;
-
         return _items.SingleOrDefault(x => x.Id == id, null);
     }
-
     public T? GetItem(string name)
     {
-        //var id = 0;
-        //foreach (var item in _items)
-        //{
-        //    if (item.Name == name)
-        //    {
-        //        id = item.Id;
-        //    }
-        //}
-        //if (id > 0) return _items[id - 1];
-        //else return null;
-                 
-        return _items.FirstOrDefault(x => x.Name ==  name, null);
+        return _items.FirstOrDefault(x => x.Name == name, null);
     }
     public void Remove(T item)
     {
@@ -87,6 +65,15 @@ public class ListRepository<T> : IListRepository<T> where T : class, IEntity, ne
             }
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine();
+        }
+    }
+    public void DeleteJsonFiles()
+    {
+        var fileName = typeof(T).Name + "ListRepository.json";
+        if (File.Exists(fileName))
+        {
+            File.Delete(fileName);
+            Console.WriteLine($"File {fileName} deleted.");
         }
     }
 }

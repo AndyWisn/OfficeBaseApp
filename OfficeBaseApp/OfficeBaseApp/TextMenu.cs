@@ -16,16 +16,16 @@ public class TextMenu
     private int previousWidth = Console.WindowWidth;
     private int previousHeight = Console.WindowHeight;
 
-
     private readonly IListRepository<Customer> _customerListRepository;
     private readonly IListRepository<Vendor> _vendorListRepository;
     private readonly IListRepository<Component> _componentListRepository;
     private readonly IListRepository<Product> _productListRepository;
-
     private readonly ISqlRepository<Customer> _customerSqlRepository;
     private readonly ISqlRepository<Vendor> _vendorSqlRepository;
     private readonly ISqlRepository<Component> _componentSqlRepository;
     private readonly ISqlRepository<Product> _productSqlRepository;
+    private readonly IComponentProviderList _componentProviderList;
+    private readonly IComponentProviderSql _componentProviderSql;
 
     public TextMenu(IListRepository<Customer> customerRepository,
                     IListRepository<Vendor> vendorRepository,
@@ -35,6 +35,8 @@ public class TextMenu
                     ISqlRepository<Vendor> vendorSqlRepository,
                     ISqlRepository<Component> componentSqlRepository,
                     ISqlRepository<Product> productSqlRepository,
+                    IComponentProviderList componentProviderList,
+                    IComponentProviderSql componentProviderSql,
                     List<string> menuItems,
                     List<MenuItemAction> menuActionMap)
     {
@@ -42,11 +44,12 @@ public class TextMenu
         _vendorListRepository = vendorRepository;
         _componentListRepository = componentRepository;
         _productListRepository = productRepository;
-
         _customerSqlRepository = customerSqlRepository;
         _vendorSqlRepository = vendorSqlRepository;
         _componentSqlRepository = componentSqlRepository;
         _productSqlRepository = productSqlRepository;
+        _componentProviderList = componentProviderList;
+        _componentProviderSql = componentProviderSql;
 
         _menuItems = menuItems;
         _menuActionMap = menuActionMap;
@@ -154,10 +157,14 @@ public class TextMenu
         Console.WriteLine("Database seeded with demo data.");
         WaitTillKeyPressed(true);
     }
-    public void ResetJsonFiles(IRepository<Customer> customerRepo, IRepository<Vendor> vendorRepo, IRepository<Component> componentRepo, IRepository<Product> productRepo, int position)                                        //Initialize Json files with sample data                
+    public void ResetJsonFiles(IListRepository<Customer> customerRepo, IListRepository<Vendor> vendorRepo, IListRepository<Component> componentRepo, IListRepository<Product> productRepo, int position)                                        //Initialize Json files with sample data                
     {
         Console.SetCursorPosition(0, position);
         Console.WriteLine();
+        customerRepo.DeleteJsonFiles();
+        vendorRepo.DeleteJsonFiles();
+        componentRepo.DeleteJsonFiles();
+        productRepo.DeleteJsonFiles();
         InitSampleData.AddCustomers(customerRepo);
         InitSampleData.AddVendors(vendorRepo);
         InitSampleData.AddComponents(componentRepo);
@@ -247,13 +254,23 @@ public class TextMenu
                                 WaitTillKeyPressed(true);
                                 },
                              () => {RemoveItemFromRepository<T>(repo, menuItems.Count + 6);},
-                             () => {}
-                            };
+                             () => {
+                                 Console.SetCursorPosition(0, menuItems.Count + 6);
+                                 if(repo is ListRepository<Component> listRepo )
+                                 {
+                                    ComponentProviderListTest();
+                                 }
+                                 else
+                                 {
+                                    ComponentProviderSqlTest();
+                                 }
+                             }
+        };
         new TextMenu(_customerListRepository, _vendorListRepository, _componentListRepository, _productListRepository,
                                        _customerSqlRepository, _vendorSqlRepository, _componentSqlRepository, _productSqlRepository,
+                                       _componentProviderList, _componentProviderSql,
                                    menuItems, menuActionMap).Run();
     }
-
     public void TextMenu_HandleSqlRepositorySelectMenu()
     {
         var menuItems = new List<string> { "<-Back", "Customers", "Vendors", "Components", "Products" };
@@ -266,21 +283,134 @@ public class TextMenu
                 };
         new TextMenu(_customerListRepository, _vendorListRepository, _componentListRepository, _productListRepository,
                                   _customerSqlRepository, _vendorSqlRepository, _componentSqlRepository, _productSqlRepository,
+                                  _componentProviderList, _componentProviderSql,
                                    menuItems, menuActionMap).Run();
     }
     public void TextMenu_HandleListRepositorySelectMenu()
     {
-        var menuItems = new List<string> { "<-Back", "Customers", "Vendors", "Components", "Products", "TEST" };
+        var menuItems = new List<string> { "<-Back", "Customers", "Vendors", "Components", "Products" };
         var menuActionMap = new List<MenuItemAction>()
                 { () => {},
                   () => {TextMenu_CommonSubmenuOptionsForRepositories<Customer>(_customerListRepository);},
                   () => {TextMenu_CommonSubmenuOptionsForRepositories<Vendor>(_vendorListRepository);},
                   () => {TextMenu_CommonSubmenuOptionsForRepositories<Component>(_componentListRepository);},
                   () => {TextMenu_CommonSubmenuOptionsForRepositories<Product>(_productListRepository); },
-                  () => { }
                 };
         new TextMenu(_customerListRepository, _vendorListRepository, _componentListRepository, _productListRepository,
                                   _customerSqlRepository, _vendorSqlRepository, _componentSqlRepository, _productSqlRepository,
+                                  _componentProviderList, _componentProviderSql,
                                    menuItems, menuActionMap).Run();
+    }
+    public void ComponentProviderListTest()
+    {
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Get Unique Names");
+        var items = _componentProviderSql.GetUniqueNames();
+        foreach (var item in items)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Minimum Price");
+        Console.WriteLine($"Minimum price of all Components {_componentProviderSql.GetMinimumPriceOfAllComponents()}");
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Get specific columns from all Components:");
+        var items1 = _componentProviderSql.GetSpecificColumns();
+        foreach (var item in items1)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Anonymous Class:");
+        Console.WriteLine(_componentProviderSql.AnonymousClass());
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Components sorted by Name:");
+        var items2 = _componentProviderSql.OrderByName();
+        foreach (var item in items2)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Components sorted by Name, descending:");
+        var items3 = _componentProviderSql.OrderByNameDescending();
+        foreach (var item in items3)
+        {
+            Console.WriteLine(item);
+        }
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Components sorted by Price and then by Name:");
+        var items4 = _componentProviderSql.OrderByNameAndPrice();
+        foreach (var item in items4)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(true);
+    }
+    public void ComponentProviderSqlTest()
+    {
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Get Unique Names");
+        var items = _componentProviderSql.GetUniqueNames();
+        foreach (var item in items)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Minimum Price");
+        Console.WriteLine($"Minimum price of all Components {_componentProviderSql.GetMinimumPriceOfAllComponents()}");
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Get specific columns from all Components:");
+        var items1 = _componentProviderSql.GetSpecificColumns();
+        foreach (var item in items1)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Anonymous Class:");
+        Console.WriteLine(_componentProviderSql.AnonymousClass());
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Components sorted by Name:");
+        var items2 = _componentProviderSql.OrderByName();
+        foreach (var item in items2)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(false);
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Components sorted by Name, descending:");
+        var items3 = _componentProviderSql.OrderByNameDescending();
+        foreach (var item in items3)
+        {
+            Console.WriteLine(item);
+        }
+
+        Console.WriteLine("-------------------------------------------------");
+        Console.WriteLine("Components sorted by Price and then by Name:");
+        var items4 = _componentProviderSql.OrderByNameAndPrice();
+        foreach (var item in items4)
+        {
+            Console.WriteLine(item);
+        }
+        WaitTillKeyPressed(true);
     }
 }

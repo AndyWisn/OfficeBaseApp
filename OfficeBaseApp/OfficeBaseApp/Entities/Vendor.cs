@@ -1,5 +1,4 @@
 ﻿namespace OfficeBaseApp.Entities;
-
 public class Vendor : BusinessPartnersBase
 {
     public Vendor()

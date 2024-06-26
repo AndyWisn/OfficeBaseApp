@@ -29,7 +29,6 @@ public class Component : TradeGoodsBase
             this.Price = float.NaN;
         }
     }
-
     public override void EnterPropertiesFromConsole()
     {
         Console.WriteLine();

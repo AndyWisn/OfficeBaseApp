@@ -16,7 +16,6 @@ public class SqlRepository<T> : ISqlRepository<T> where T : class, IEntity, new(
     public  event EventHandler<T> ItemAdded;
     public  event EventHandler<T> ItemRemoved;
 
-
     public  void Add(T item)
     {
         _dbSet.Add(item);
@@ -36,16 +35,6 @@ public class SqlRepository<T> : ISqlRepository<T> where T : class, IEntity, new(
     }
     public T? GetItem(string name)
     {
-        //var id = 0;
-        //foreach (var item in _dbSet)
-        //{
-        //    if (item.Name == name)
-        //    {
-        //        id = item.Id;
-        //    }
-        //}
-        //return _dbSet.Find(id);
-
         return _dbSet.FirstOrDefault(x => x.Name == name, null);
     }
 
@@ -62,10 +51,8 @@ public class SqlRepository<T> : ISqlRepository<T> where T : class, IEntity, new(
             {
                 Console.WriteLine("Database created.");
             }
-        }
-       
+        } 
     }
-
     public  void Remove(T item)
     {
         if (item != null)

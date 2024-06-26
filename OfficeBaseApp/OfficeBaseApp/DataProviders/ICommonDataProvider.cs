@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OfficeBaseApp.Repositories;
+﻿using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Entities;
 using System.Text;
-using OfficeBaseApp.DataProviders.Extensions;
 
 namespace OfficeBaseApp.DataProviders;
-
 public interface ICommonDataProvider<T> where T : class, IEntity
 {
     public List<string> GetUniqueNames();

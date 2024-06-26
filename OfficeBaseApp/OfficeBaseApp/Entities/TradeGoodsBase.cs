@@ -6,5 +6,4 @@ public abstract class TradeGoodsBase : IEntity
     public string? Description { get; set; }
     public override string ToString() => string.Format("{0,-10} {1,-30} {2,-30}", $"|Id:{Id}", $"|Name: {Name}", $"|Inf: {Description}");
     public abstract void EnterPropertiesFromConsole();
-    
 }

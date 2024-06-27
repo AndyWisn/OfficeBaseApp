@@ -27,7 +27,6 @@ namespace OfficeBaseApp.Entities;
                 stringList += this.ProductionComponentsId[this.ProductionComponentsId.Count - 1].ToString() + ".";
             }
             return stringList;
-
         }
         set { }
     }

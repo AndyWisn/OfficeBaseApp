@@ -1,6 +1,5 @@
 ﻿namespace OfficeBaseApp.Entities;
 public class Component : TradeGoodsBase
-
 {
     public Component()
     {
@@ -11,9 +10,7 @@ public class Component : TradeGoodsBase
         this.Description = descryption;
         this.Price = price;
         this.ComponentVendorId = vendorId;
-
     }
-
     public Component(string name, string priceInString, string descryption, int vendorId)
     {
         this.Name = name;

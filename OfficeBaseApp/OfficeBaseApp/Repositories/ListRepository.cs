@@ -1,10 +1,8 @@
-﻿namespace OfficeBaseApp.Repositories;
-
-using Microsoft.Extensions.Options;
-using OfficeBaseApp.Entities;
+﻿using OfficeBaseApp.Entities;
 using System.Text.Json;
 
-public class ListRepository<T> : IListRepository<T> where T : class, IEntity, new()
+namespace OfficeBaseApp.Repositories;
+public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
 {
     private readonly List<T> _items = new();
     public event EventHandler<T> ItemAdded;

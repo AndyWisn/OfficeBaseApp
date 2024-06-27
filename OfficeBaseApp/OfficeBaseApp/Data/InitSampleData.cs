@@ -3,7 +3,7 @@ using OfficeBaseApp.Entities;
 using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Repositories.Extensions;
 
-internal static class InitSampleData
+internal class InitSampleData
 {   
     internal static void AddCustomers(IRepository<Customer> customerRepo)
     {

@@ -1,7 +1,7 @@
 ﻿namespace OfficeBaseApp.Entities;
 public class Customer : BusinessPartnersBase
 {
-    public Customer()
+   public Customer()
     {
     }
     public Customer(string name, string representativeFirstName, string representativeLastName, string contact)
@@ -25,8 +25,6 @@ public class Customer : BusinessPartnersBase
         Console.WriteLine("Enter contact:");
         this.Contact = Console.ReadLine();
         Console.CursorVisible = false;
-        //return new Customer(name, repName, repSurname, contact);
     }
-
     public override string ToString() => string.Format("{0,-14}", "Customer  ") + base.ToString();
 }

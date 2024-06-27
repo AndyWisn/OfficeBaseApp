@@ -1,6 +1,6 @@
 ﻿using OfficeBaseApp.Entities;
 namespace OfficeBaseApp.DataProviders;
-public interface IComponentProviderSql : ICommonDataProvider<Component>
+public interface IComponentProvider : IDataProvider<Component>
 {
     public float GetMinimumPriceOfAllComponents();
     public List<Component> GetSpecificColumns();

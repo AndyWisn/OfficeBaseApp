@@ -1,9 +1,7 @@
-﻿using OfficeBaseApp.Repositories;
-using OfficeBaseApp.Entities;
-using System.Text;
+﻿using OfficeBaseApp.Entities;
 
 namespace OfficeBaseApp.DataProviders;
-public interface ICommonDataProvider<T> where T : class, IEntity
+public interface IDataProvider<T> where T : class, IEntity
 {
     public List<string> GetUniqueNames();
     public List<T> OrderByName();

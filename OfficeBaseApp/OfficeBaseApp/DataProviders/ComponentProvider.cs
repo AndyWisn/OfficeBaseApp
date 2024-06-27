@@ -3,10 +3,10 @@ using OfficeBaseApp.Entities;
 using System.Text;
 
 namespace OfficeBaseApp.DataProviders;
-public class ComponentProviderList : CommonDataProvider<Component>, IComponentProviderList
+public class ComponentProvider : DataProvider<Component>, IComponentProvider
 {
-    private readonly IListRepository<Component> _repository;
-    public ComponentProviderList(IListRepository<Component> repository) : base(repository)
+    private readonly IRepository<Component> _repository;
+    public ComponentProvider(IRepository<Component> repository) : base(repository)
     {
         _repository = repository;
     }

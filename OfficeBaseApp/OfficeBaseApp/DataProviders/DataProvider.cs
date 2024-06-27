@@ -1,12 +1,11 @@
 ﻿using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Entities;
-using System.Text;
 
 namespace OfficeBaseApp.DataProviders;
-public abstract class CommonDataProvider<T> : ICommonDataProvider<T> where T : class, IEntity, new()
+public abstract class DataProvider<T> : IDataProvider<T> where T : class, IEntity, new()
 {
     private readonly IRepository<T> _repository;
-    protected CommonDataProvider(IRepository<T> repository)
+    protected DataProvider(IRepository<T> repository)
     {
         _repository = repository;
     }

@@ -1,7 +1,6 @@
 ﻿namespace OfficeBaseApp.Repositories.Extensions; 
 using Microsoft.IdentityModel.Tokens;
 using OfficeBaseApp.Entities;
-
 public static class RepositoryExtensions
 {
     public static void AddBatch<T>(this IRepository<T> repository, T[] items)

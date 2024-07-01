@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OfficeBaseApp.Entities;
+using OfficeBaseApp.Data.Entities;
+
 namespace OfficeBaseApp.Data;
 public class OfficeBaseAppDbContext : DbContext
 {

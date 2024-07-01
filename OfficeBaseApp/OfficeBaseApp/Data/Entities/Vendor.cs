@@ -1,4 +1,4 @@
-﻿namespace OfficeBaseApp.Entities;
+﻿namespace OfficeBaseApp.Data.Entities;
 public class Vendor : BusinessPartnersBase
 {
     public Vendor()
@@ -6,12 +6,12 @@ public class Vendor : BusinessPartnersBase
     }
     public Vendor(string name, string representativeFirstName, string representativeLastName, string contact, string certificate, string supportContact)
     {
-        this.Name = name;
-        this.RepresentativeFirstName = representativeFirstName;
-        this.RepresentativeLastName = representativeLastName;
-        this.Contact = contact;
-        this.VendorCertificate = certificate;
-        this.SupportContact = supportContact;
+        Name = name;
+        RepresentativeFirstName = representativeFirstName;
+        RepresentativeLastName = representativeLastName;
+        Contact = contact;
+        VendorCertificate = certificate;
+        SupportContact = supportContact;
     }
     public string VendorCertificate { get; set; }
     public string SupportContact { get; set; }
@@ -21,17 +21,17 @@ public class Vendor : BusinessPartnersBase
         Console.WriteLine($"Add new Vendor to repository:");
         Console.CursorVisible = true;
         Console.WriteLine("Enter name:");
-        this.Name = Console.ReadLine();
+        Name = Console.ReadLine();
         Console.WriteLine("Enter representative's name:");
-        this.RepresentativeFirstName = Console.ReadLine();
+        RepresentativeFirstName = Console.ReadLine();
         Console.WriteLine("Enter representative's surname:");
-        this.RepresentativeLastName = Console.ReadLine();
+        RepresentativeLastName = Console.ReadLine();
         Console.WriteLine("Enter contact:");
-        this.Contact = Console.ReadLine();
+        Contact = Console.ReadLine();
         Console.WriteLine("Enter certificates:");
-        this.VendorCertificate = Console.ReadLine();
+        VendorCertificate = Console.ReadLine();
         Console.WriteLine("Enter support contact:");
-        this.SupportContact = Console.ReadLine();
+        SupportContact = Console.ReadLine();
         Console.CursorVisible = false;
         //return new Vendor(name, repName, repSurname, contact, certificates, support);
     }

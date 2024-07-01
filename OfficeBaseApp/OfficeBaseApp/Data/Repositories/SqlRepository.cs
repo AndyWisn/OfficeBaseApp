@@ -1,8 +1,8 @@
-﻿using OfficeBaseApp.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OfficeBaseApp.Data;
+using OfficeBaseApp.Data.Entities;
 
-namespace OfficeBaseApp.Repositories;
+namespace OfficeBaseApp.Data.Repositories;
 public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
 {
     private readonly DbSet<T> _dbSet;
@@ -12,19 +12,19 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
         _dbContext = dbContext;
         _dbSet = _dbContext.Set<T>();
     }
-    public  event EventHandler<T> ItemAdded;
-    public  event EventHandler<T> ItemRemoved;
-    public  void Add(T item)
+    public event EventHandler<T> ItemAdded;
+    public event EventHandler<T> ItemRemoved;
+    public void Add(T item)
     {
         _dbSet.Add(item);
         Save();
         ItemAdded?.Invoke(this, item);
     }
-    public  IEnumerable<T> GetAll()
+    public IEnumerable<T> GetAll()
     {
         return _dbSet.ToList();
     }
-    public  T? GetItem(int id)
+    public T? GetItem(int id)
     {
         //return _dbSet.Find(id);
 
@@ -34,11 +34,11 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         return _dbSet.FirstOrDefault(x => x.Name == name, null);
     }
-    public  void Load()
+    public void Load()
     {
         using (var context = new OfficeBaseAppDbContext())
         {
-        
+
             if (context.Database.CanConnect())
             {
                 Console.WriteLine("Database connected.");
@@ -47,9 +47,9 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
             {
                 Console.WriteLine("Database created.");
             }
-        } 
+        }
     }
-    public  void Remove(T item)
+    public void Remove(T item)
     {
         if (item != null)
         {
@@ -58,7 +58,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
             Save();
         }
     }
-    public  void Save()
+    public void Save()
     {
         _dbContext.SaveChanges();
     }

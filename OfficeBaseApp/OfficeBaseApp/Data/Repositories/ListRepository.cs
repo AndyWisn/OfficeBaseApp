@@ -1,7 +1,7 @@
-﻿using OfficeBaseApp.Entities;
+﻿using OfficeBaseApp.Data.Entities;
 using System.Text.Json;
 
-namespace OfficeBaseApp.Repositories;
+namespace OfficeBaseApp.Data.Repositories;
 public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
 {
     private readonly List<T> _items = new();
@@ -33,7 +33,7 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
     }
     public void Load()
     {
-        this.FileName = typeof(T).Name + "ListRepository.json";
+        FileName = typeof(T).Name + "ListRepository.json";
         if (File.Exists(FileName))
         {
             using (var reader = File.OpenText(FileName))
@@ -50,14 +50,14 @@ public class ListRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         if (_items.Count > 0)
         {
-            this.FileName = _items.First().GetType().Name + "ListRepository.json";
+            FileName = _items.First().GetType().Name + "ListRepository.json";
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"==> Saving file: {FileName}");
             using (var writer = File.AppendText(FileName))
             {
                 foreach (var item in _items)
                 {
-                    var json = JsonSerializer.Serialize<T>(item);
+                    var json = JsonSerializer.Serialize(item);
                     writer.WriteLine(json);
                 }
             }

@@ -1,5 +1,6 @@
-﻿using OfficeBaseApp.Entities;
-namespace OfficeBaseApp.DataProviders;
+﻿using OfficeBaseApp.Data.Entities;
+
+namespace OfficeBaseApp.Components.DataProviders;
 public interface IComponentProvider : IDataProvider<Component>
 {
     public float GetMinimumPriceOfAllComponents();

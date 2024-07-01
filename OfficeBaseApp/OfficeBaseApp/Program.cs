@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OfficeBaseApp;
-using OfficeBaseApp.Entities;
-using OfficeBaseApp.DataProviders;
-using OfficeBaseApp.Repositories;
 using OfficeBaseApp.Data;
-   
+using OfficeBaseApp.Components.DataProviders;
+using OfficeBaseApp.Components.CsvReader;
+using OfficeBaseApp.Data.Entities;
+using OfficeBaseApp.Data.Repositories;
+
 var services = new ServiceCollection();
 services.AddSingleton<IApp, App>();
 services.AddScoped<IRepository<Customer>, SqlRepository<Customer>>();
@@ -13,6 +14,7 @@ services.AddScoped<IRepository<Component>, SqlRepository<Component>>();
 services.AddScoped<IRepository<Product>, SqlRepository<Product>>();
 services.AddDbContext<OfficeBaseAppDbContext>();
 services.AddSingleton<IComponentProvider, ComponentProvider>();
+services.AddSingleton<ICsvReader, CsvReader > ();
 var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetService<IApp>()!;
 app.Run();

@@ -1,29 +1,29 @@
-﻿namespace OfficeBaseApp.Entities;
+﻿namespace OfficeBaseApp.Data.Entities;
 public class Customer : BusinessPartnersBase
 {
-   public Customer()
+    public Customer()
     {
     }
     public Customer(string name, string representativeFirstName, string representativeLastName, string contact)
     {
-        this.Name = name;
-        this.RepresentativeFirstName = representativeFirstName;
-        this.RepresentativeLastName = representativeLastName;
-        this.Contact = contact;
+        Name = name;
+        RepresentativeFirstName = representativeFirstName;
+        RepresentativeLastName = representativeLastName;
+        Contact = contact;
     }
     public override void EnterPropertiesFromConsole()
-    { 
+    {
         Console.WriteLine();
         Console.WriteLine($"Add new Customer to repository:");
         Console.CursorVisible = true;
         Console.WriteLine("Enter name:");
-        this.Name = Console.ReadLine();
+        Name = Console.ReadLine();
         Console.WriteLine("Enter representative's name:");
-        this.RepresentativeFirstName = Console.ReadLine();
+        RepresentativeFirstName = Console.ReadLine();
         Console.WriteLine("Enter representative's surname:");
-        this.RepresentativeLastName = Console.ReadLine();
+        RepresentativeLastName = Console.ReadLine();
         Console.WriteLine("Enter contact:");
-        this.Contact = Console.ReadLine();
+        Contact = Console.ReadLine();
         Console.CursorVisible = false;
     }
     public override string ToString() => string.Format("{0,-14}", "Customer  ") + base.ToString();

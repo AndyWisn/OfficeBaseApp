@@ -1,5 +1,6 @@
-﻿using OfficeBaseApp.Entities;
-namespace OfficeBaseApp.DataProviders.Extensions;
+﻿using OfficeBaseApp.Data.Entities;
+
+namespace OfficeBaseApp.Components.DataProviders.Extensions;
 public static class DataProvidernentsHelper
 {
     public static IEnumerable<Component> ByDescription(this IEnumerable<Component> query, string descritption)

@@ -1,7 +1,8 @@
 ﻿namespace OfficeBaseApp.Data;
-using OfficeBaseApp.Entities;
-using OfficeBaseApp.Repositories;
-using OfficeBaseApp.Repositories.Extensions;
+
+using OfficeBaseApp.Data.Entities;
+using OfficeBaseApp.Data.Repositories;
+using OfficeBaseApp.Data.Repositories.Extensions;
 
 internal class InitSampleData
 {   

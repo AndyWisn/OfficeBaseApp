@@ -1,4 +1,4 @@
-﻿namespace OfficeBaseApp.Entities;
+﻿namespace OfficeBaseApp.Data.Entities;
 public abstract class TradeGoodsBase : IEntity
 {
     public int Id { get; set; }

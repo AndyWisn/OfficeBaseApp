@@ -1,6 +1,6 @@
-﻿using OfficeBaseApp.Entities;
+﻿using OfficeBaseApp.Data.Entities;
 
-namespace OfficeBaseApp.DataProviders;
+namespace OfficeBaseApp.Components.DataProviders;
 public interface IDataProvider<T> where T : class, IEntity
 {
     public List<string> GetUniqueNames();

@@ -3,22 +3,22 @@ using OfficeBaseApp.Data.Entities;
 using OfficeBaseApp.Data.Repositories;
 
 namespace OfficeBaseApp.Components.DataProviders;
-public class ComponentProvider : DataProvider<Component>, IComponentProvider
+public class ProductionPartProvider : DataProvider<ProductionPart>, IProductionPartProvider
 {
-    private readonly IRepository<Component> _repository;
-    public ComponentProvider(IRepository<Component> repository) : base(repository)
+    private readonly IRepository<ProductionPart> _repository;
+    public ProductionPartProvider(IRepository<ProductionPart> repository) : base(repository)
     {
         _repository = repository;
     }
-    public float GetMinimumPriceOfAllComponents()
+    public float GetMinimumPriceOfAllParts()
     {
         var components = _repository.GetAll();
         return components.Select(x => x.Price).Min();
     }
-    public List<Component> GetSpecificColumns()
+    public List<ProductionPart> GetSpecificColumns()
     {
         var components = _repository.GetAll();
-        var list = components.Select(component => new Component
+        var list = components.Select(component => new ProductionPart
         {
             Name = component.Name,
             Description = component.Description,
@@ -44,7 +44,7 @@ public class ComponentProvider : DataProvider<Component>, IComponentProvider
         }
         return sb.ToString();
     }
-    public List<Component> OrderByNameAndPrice()
+    public List<ProductionPart> OrderByNameAndPrice()
     {
         var components = _repository.GetAll();
         return components

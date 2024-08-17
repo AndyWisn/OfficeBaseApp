@@ -16,10 +16,10 @@ public static class RepositoryExtensions
     }
     public static void SetUp<T>(this IRepository<T> repository) where T : class, IEntity
     {
-        repository.ItemAdded += RepositoryOnItemAdded;
+        repository.ItemAdded += RepositoryOnItemAdded; 
         repository.ItemRemoved += RepositoryOnItemRemoved;
     }
-    public static void RepositoryOnItemAdded<T>(object? sender, T e) where T : class, IEntity
+    public static void RepositoryOnItemAdded(object? sender, IEntity e)
     {
         using (var writer = File.AppendText("OfficeBaseApp_Backlog.TXT"))
         {
@@ -30,7 +30,7 @@ public static class RepositoryExtensions
             }
         }
     }
-    public static void RepositoryOnItemRemoved<T>(object? sender, T e) where T : class, IEntity
+    public static void RepositoryOnItemRemoved(object? sender, IEntity e)
     {
         using (var writer = File.AppendText("OfficeBaseApp_Backlog.TXT"))
         {

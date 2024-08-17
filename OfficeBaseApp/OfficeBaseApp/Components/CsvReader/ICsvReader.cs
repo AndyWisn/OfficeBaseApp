@@ -4,8 +4,9 @@ namespace OfficeBaseApp.Components.CsvReader;
 
 public interface ICsvReader
 {
-    List<Car> ProcessCars(string filePath);
+    List<ProductModel> ProcessProducts(string filePath);
+    List<ProductionPartModel> ProcessProductionParts(string filePath);
+    List<VendorModel> ProcessVendors(string filePath);
 
-    List<Manufacturer> ProcessManufacturers(string filePath);
 
 }

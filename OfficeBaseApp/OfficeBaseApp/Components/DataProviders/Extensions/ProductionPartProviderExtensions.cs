@@ -3,7 +3,7 @@
 namespace OfficeBaseApp.Components.DataProviders.Extensions;
 public static class DataProvidernentsHelper
 {
-    public static IEnumerable<Component> ByDescription(this IEnumerable<Component> query, string descritption)
+    public static IEnumerable<ProductionPart> ByDescription(this IEnumerable<ProductionPart> query, string descritption)
     {
         return query.Where(x => x.Description == descritption);
     }

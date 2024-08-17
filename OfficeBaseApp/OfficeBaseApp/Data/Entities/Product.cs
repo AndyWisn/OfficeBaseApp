@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
 namespace OfficeBaseApp.Data.Entities;
-public class Product : TradeGoodsBase
+public class Product : IEntity
 {
     public Product()
     {
@@ -10,40 +10,44 @@ public class Product : TradeGoodsBase
     {
         Name = name;
         Description = description;
-        ProductionComponentsId = productionComponentList;
+        ProductionPartsId = productionComponentList;
     }
-    public List<int> ProductionComponentsId { get; set; } = new List<int>();
-    public string ComponentListInString
+    public int Id { get; set; }
+    public string? Name { get; set; }
+    public string? Description { get; set; }
+    public List<int> ProductionPartsId { get; set; } = new List<int>();
+    public float Price { get; set; }
+    public string? ComponentListInString
     {
         get
         {
             string stringList = "";
-            if (ProductionComponentsId.Count > 0)
+            if (ProductionPartsId.Count > 0)
             {
-                for (int i = 0; i < ProductionComponentsId.Count - 1; i++)
+                for (int i = 0; i < ProductionPartsId.Count - 1; i++)
                 {
-                    stringList += ProductionComponentsId[i].ToString() + ",";
+                    stringList += ProductionPartsId[i].ToString() + ",";
                 }
-                stringList += ProductionComponentsId[ProductionComponentsId.Count - 1].ToString() + ".";
+                stringList += ProductionPartsId[ProductionPartsId.Count - 1].ToString() + ".";
             }
             return stringList;
         }
         set { }
     }
-    public float ProductCost
-    {
-        get
-        {
-            float productComponentCostSum = 0;
-            foreach (var componentId in ProductionComponentsId)
-            {
-                //productComponentCostSum += component.Price;
-            }
-            return productComponentCostSum;
-        }
-        set { }
-    }
-    public override void EnterPropertiesFromConsole()
+public float ProductCost { get; set; }
+    //{
+    //    get
+    //    {
+    //        float productionPartsCostSum = 0;
+    //        foreach (var productionPartsId in ProductionPartsId)
+    //        {
+    //            productionPartsCostSum += .Price;
+    //        }
+    //        return productionPartsCostSum;
+    //    }
+    //    set { }
+    //}
+    public void EnterPropertiesFromConsole()
     {
         Console.WriteLine();
         Console.WriteLine($"Add new Product to repository:");
@@ -56,9 +60,9 @@ public class Product : TradeGoodsBase
         string? components = Console.ReadLine();
         List<int> componentList = null;
         if (!components.IsNullOrEmpty()) { componentList = components.Split(',').Select(int.Parse).ToList(); }
-        ProductionComponentsId = componentList;
+        ProductionPartsId = componentList;
         Console.CursorVisible = false;
         //return new Product(name, description, componentList);
     }
-    public override string ToString() => string.Format("{0,-13} {1,30} {2,12} {3,10}", "Product", base.ToString(), "|Components:", ComponentListInString);
+    public override string ToString() => string.Format("{0,-13} {1,30} {2,12} {3,10}", "Product", Name ,"|Components:", ComponentListInString, "Descr:", Description, "Price:", Price);
 }

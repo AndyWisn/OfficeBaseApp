@@ -1,30 +1,46 @@
-﻿namespace OfficeBaseApp;
-public class TextMenu
+﻿namespace OfficeBaseApp.Components.TextMenu;
+public class TextMenu : ITextMenu
 {
     public delegate void MenuItemAction();
     private List<MenuItemAction> _menuActionMap = new List<MenuItemAction>();
     private List<string> _menuItems = new List<string>();
     private int previousWidth = Console.WindowWidth;
     private int previousHeight = Console.WindowHeight;
+    private ConsoleKeyInfo keyPressedOnExit;
+    private bool _verticalArrowsActive = false;
+    private bool _normalEnterAction = true;
+
+    public TextMenu(List<string> menuItems, List<MenuItemAction> menuActionMap, bool verticalArrowsActive, bool normalEnterAction)
+    {
+        _menuItems = menuItems;
+        _menuActionMap = menuActionMap;
+        _verticalArrowsActive = verticalArrowsActive;
+        _normalEnterAction = normalEnterAction;
+    }
     public TextMenu(List<string> menuItems, List<MenuItemAction> menuActionMap)
     {
         _menuItems = menuItems;
         _menuActionMap = menuActionMap;
     }
-    public void Run()
+    public ConsoleKeyInfo Run()
     {
         var actualItem = 1;
         Console.CursorVisible = false;
         bool menuIsActive = true;
+       
         while (menuIsActive)
         {
             PrintMenu(actualItem);
             NavigateMenu(ref actualItem, ref menuIsActive);
-            _menuActionMap[actualItem].Invoke();
+            if (menuIsActive) {
+                PrintHeader(); _menuActionMap[actualItem].Invoke();               
+            }
         }
         PrintHeader();
+        return keyPressedOnExit;
+      
     }
-    public void PrintMenu(int actualItem)
+    private void PrintMenu(int actualItem)
     {
         int currentWidth = Console.WindowWidth;
         int currentHeight = Console.WindowHeight;
@@ -38,9 +54,8 @@ public class TextMenu
         Console.ForegroundColor = ConsoleColor.Gray;
         Console.SetCursorPosition(0, 2);
         Console.Write(new string(' ', Console.WindowWidth));
-        Console.SetCursorPosition(0, 2);
         Console.WriteLine();
-        Console.WriteLine();
+        Console.WriteLine(); Console.WriteLine();
         for (int i = 0; i < _menuItems.Count; i++)
         {
             Console.BackgroundColor = ConsoleColor.Black;
@@ -58,42 +73,55 @@ public class TextMenu
         Console.BackgroundColor = ConsoleColor.Black;
         Console.ForegroundColor = ConsoleColor.Gray;
     }
-    public void NavigateMenu(ref int actualItem, ref bool menuIsActive)
+    private void NavigateMenu(ref int actualItem, ref bool menuIsActive)
     {
         do
         {
             ConsoleKeyInfo keyPressed = Console.ReadKey();
-            if ((keyPressed.Key == ConsoleKey.UpArrow) ^ (keyPressed.Key == ConsoleKey.LeftArrow))
+            if (keyPressed.Key == ConsoleKey.UpArrow)
             {
-                actualItem = (actualItem > 0) ? actualItem - 1 : _menuItems.Count - 1;
+                actualItem = actualItem > 0 ? actualItem - 1 : _menuItems.Count - 1;
                 PrintMenu(actualItem);
             }
-            else if ((keyPressed.Key == ConsoleKey.DownArrow) ^ (keyPressed.Key == ConsoleKey.RightArrow))
+            else if (_verticalArrowsActive && (keyPressed.Key == ConsoleKey.LeftArrow))
             {
-                actualItem = (actualItem < _menuItems.Count - 1) ? actualItem + 1 : 0;
+                menuIsActive = false;
+                keyPressedOnExit = keyPressed;
+                break;
+            }
+            else if (keyPressed.Key == ConsoleKey.DownArrow)
+            {
+                actualItem = actualItem < _menuItems.Count - 1 ? actualItem + 1 : 0;
                 PrintMenu(actualItem);
+            }
+            else if (_verticalArrowsActive && (keyPressed.Key == ConsoleKey.RightArrow))
+            {
+                menuIsActive = false;
+                keyPressedOnExit = keyPressed;
+                break;
             }
             else if (keyPressed.Key == ConsoleKey.Escape)
             {
                 menuIsActive = false;
                 actualItem = 0;
+                keyPressedOnExit = keyPressed;
                 break;
             }
             else if (keyPressed.Key == ConsoleKey.Enter)
             {
-                if (actualItem == 0)
-                {
-                    menuIsActive = false;
-                }
+                if (_normalEnterAction) { menuIsActive = actualItem != 0; }
+                else { PrintHeader();
+                       _menuActionMap[actualItem].Invoke(); 
+                       menuIsActive = false; }
+                keyPressedOnExit = keyPressed;
                 break;
             }
         }
-        while (true);    
+        while (true);
     }
     public static void PrintHeader()
     {
         Console.Clear();
-        Console.SetCursorPosition(0, 0);
         Console.WriteLine("============= OfficeBaseApp v.1 Menu Options =============");
         Console.WriteLine("Move up/down with arrows. Confirm with Enter. Esc to exit.");
     }

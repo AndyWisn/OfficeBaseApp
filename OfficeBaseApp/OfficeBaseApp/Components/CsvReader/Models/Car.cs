@@ -1,6 +1,9 @@
-﻿namespace OfficeBaseApp.Components.CsvReader.Models;
-public class Car
+﻿using OfficeBaseApp.Data.Entities;
+
+namespace OfficeBaseApp.Components.CsvReader.Models;
+public class CarModel
 {
+    public int Id { get; set; }
     public int Year {  get; set; }
     public string Manufacturer { get; set; }
     public string Name { get; set; }

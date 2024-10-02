@@ -12,30 +12,12 @@ public class ProductionPart : IEntity
         PartManufacturer = partManufacturer;
         PartVendor = partVendor;    
     }
-    public ProductionPart(string name, string priceInString, string descryption, string partVendor, string partManufacturer)
-    {
-        Name = name;
-        Description = descryption;
-        PartManufacturer = partManufacturer;
-        PartVendor = partVendor;
-
-        if (float.TryParse(priceInString, out float result))
-        {
-            Price = result;
-        }
-        else
-        {
-            Price = float.NaN;
-        }
-    }
-
     public int Id { get; set; }
     public string? Name { get; set; }
     public string? PartManufacturer { get; set; }
     public string? Description { get; set; }
     public float Price { get; set; }
     public string? PartVendor { get; set; }
-
     public void EnterPropertiesFromConsole()
     {
         Console.WriteLine();
@@ -56,8 +38,8 @@ public class ProductionPart : IEntity
         Console.WriteLine("Enter desciption:");
         Description = Console.ReadLine();
         Console.WriteLine("Enter vendor:");
-        PartManufacturer = Console.ReadLine();
+        PartVendor = Console.ReadLine();
         Console.CursorVisible = false;
     }
-    public override string ToString() => string.Format($"Part: {Name} Mfr:{PartManufacturer} Vendor:{PartVendor}");
+    public override string ToString() => string.Format("{0,-5} {1,-30} {2,-30} {3,-8} {4,-20}", Id, Name, PartManufacturer, Price, PartVendor);
 }

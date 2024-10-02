@@ -3,7 +3,7 @@ using OfficeBaseApp.Data.Entities;
 using OfficeBaseApp.Data.Repositories;
 
 namespace OfficeBaseApp.Components.DataProviders;
-public class ProductionPartProvider : DataProvider<ProductionPart>, IProductionPartProvider
+public class ProductionPartProvider : GenericDataProvider<ProductionPart>, IProductionPartProvider
 {
     private readonly IRepository<ProductionPart> _repository;
     public ProductionPartProvider(IRepository<ProductionPart> repository) : base(repository)

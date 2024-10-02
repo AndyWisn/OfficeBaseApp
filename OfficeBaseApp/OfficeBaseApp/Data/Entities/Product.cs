@@ -34,19 +34,6 @@ public class Product : IEntity
         }
         set { }
     }
-public float ProductCost { get; set; }
-    //{
-    //    get
-    //    {
-    //        float productionPartsCostSum = 0;
-    //        foreach (var productionPartsId in ProductionPartsId)
-    //        {
-    //            productionPartsCostSum += .Price;
-    //        }
-    //        return productionPartsCostSum;
-    //    }
-    //    set { }
-    //}
     public void EnterPropertiesFromConsole()
     {
         Console.WriteLine();
@@ -64,5 +51,5 @@ public float ProductCost { get; set; }
         Console.CursorVisible = false;
         //return new Product(name, description, componentList);
     }
-    public override string ToString() => string.Format("{0,-13} {1,30} {2,12} {3,10}", "Product", Name ,"|Components:", ComponentListInString, "Descr:", Description, "Price:", Price);
+    public override string ToString() => string.Format("{0,-5} {1,-35} {2,-30} {3,-5} {4,-5}", Id, Name, Description, Price, ComponentListInString);
 }

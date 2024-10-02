@@ -79,7 +79,7 @@ public class CsvReader : ICsvReader
                     {
                         Name = columns[0],
                         Contact = columns[1],
-                        SupportContact = columns[2],
+                        Description = columns[2],
                         Country = columns[3],
                         VendorCertificate = columns[4],
                     };

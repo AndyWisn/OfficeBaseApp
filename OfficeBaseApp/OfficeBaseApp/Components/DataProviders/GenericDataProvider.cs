@@ -1,14 +1,20 @@
-﻿using OfficeBaseApp.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using OfficeBaseApp.Data.Entities;
 using OfficeBaseApp.Data.Repositories;
 
 namespace OfficeBaseApp.Components.DataProviders;
-public abstract class DataProvider<T> : IDataProvider<T> where T : class, IEntity, new()
+public abstract class GenericDataProvider<T> : IGenericDataProvider<T> where T : class, IEntity, new()
 {
     private readonly IRepository<T> _repository;
-    protected DataProvider(IRepository<T> repository)
+    protected GenericDataProvider(IRepository<T> repository)
     {
         _repository = repository;
     }
+    public IEnumerable<T> GetAll()
+    {
+        return _repository.GetAll();
+    }
+
     public List<string> GetUniqueNames()
     {
         var components = _repository.GetAll();
@@ -29,7 +35,6 @@ public abstract class DataProvider<T> : IDataProvider<T> where T : class, IEntit
     {
         var components = _repository.GetAll();
         return components.Where(x => x.Name.StartsWith(prefix)).ToList();
-
     }
     public List<T> SkipItems(int howMany)
     {

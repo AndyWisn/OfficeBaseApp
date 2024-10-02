@@ -1,12 +1,16 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using OfficeBaseApp.Components.CsvReader;
+using OfficeBaseApp.Components.CsvReader.Models;
 using OfficeBaseApp.Components.DataProviders;
 using OfficeBaseApp.Components.TextMenu;
+using OfficeBaseApp.Components.XmlWriter;
 using OfficeBaseApp.Data;
 using OfficeBaseApp.Data.Entities;
 using OfficeBaseApp.Data.Entities.Extensions;
 using OfficeBaseApp.Data.Repositories;
 using OfficeBaseApp.Data.Repositories.Extensions;
+using System.Reflection;
+using System.Resources;
 using System.Runtime;
 using System.Text;
 using static OfficeBaseApp.Components.TextMenu.TextMenu;
@@ -18,9 +22,13 @@ public class App : IApp
     private readonly IRepository<ProductionPart> _productionPartRepository;
     private readonly IRepository<Product> _productRepository;
     private readonly IProductionPartProvider _productionPartProvider;
+
+
     private readonly ICsvReader _csvReader;
+    private readonly IXmlWriter _xmlWriter;
 
     private readonly OfficeBaseAppDbContext _officeBaseAppDbContext;
+
 
     private const bool verticalArrowsActive = true;
     private const bool normalEnterAction = true;
@@ -30,6 +38,7 @@ public class App : IApp
                IRepository<Product> productRepository,
                IProductionPartProvider productionPartProvider,
                ICsvReader csvReader,
+               IXmlWriter xmlWriter,
                OfficeBaseAppDbContext officeBaseAppDbContext)
     {
 
@@ -41,6 +50,7 @@ public class App : IApp
         _productRepository.SetUp();
         _productionPartProvider = productionPartProvider;
         _csvReader = csvReader;
+        _xmlWriter = xmlWriter;
         _officeBaseAppDbContext = officeBaseAppDbContext;
         _officeBaseAppDbContext.Database.EnsureCreated();
 
@@ -48,7 +58,7 @@ public class App : IApp
     public void Run()
     {
 
-      
+
 
 
         //var carsFromDb = _officeBaseAppDbContext.Cars.ToList();
@@ -127,7 +137,7 @@ public class App : IApp
         //
         Console.Clear();
         PrintHeader();
-        var menuItems = new List<string>() { "<-Exit", "Reset Db & read CSV data", "Vendors", "Components", "Products" };
+        var menuItems = new List<string>() { "<-Exit", "Reset Db & read CSV data", "Vendors", "Production Parts", "Products", "Create XML Output" };
         var menuActionMap = new List<TextMenu.MenuItemAction>()
             {
                 () => {Console.Clear(); Environment.Exit(0);},
@@ -135,6 +145,9 @@ public class App : IApp
                       () => {CommonSubmenuOptionsForRepositories<Vendor>(_vendorRepository);},
                       () => {CommonSubmenuOptionsForRepositories<ProductionPart>(_productionPartRepository);},
                       () => {CommonSubmenuOptionsForRepositories<Product>(_productRepository); },
+                      () => {Console.Clear();
+                              _xmlWriter.CreateOutputXml();
+                              WaitTillKeyPressed(); }
             };
         new TextMenu(menuItems, menuActionMap).Run();
     }
@@ -167,81 +180,16 @@ public class App : IApp
         //}
     }
 
-    public void ReadAllFromDb()
-    {
-        //var carsFromDb = _officeBaseAppDbContext.Cars.ToList();
-        //foreach (var carFromDb in carsFromDb)
-        //{
-        //    Console.WriteLine($"\t{carFromDb.Name}: {carFromDb.Combined}");
-        //}
-    }
-    public void CreateOutputXml()
-    {
-        //var cars = _csvReader.ProcessCars("Resources\\Files\\fuel.csv");
-        //var manufacturers = _csvReader.ProcessManufacturers("Resources\\Files\\manufacturers.csv");
-        //var groups = manufacturers.GroupJoin(
-        //    cars,
-        //    manufacturer => manufacturer.Name,
-        //    car => car.Manufacturer,
-        //    (m, g) => new
-        //    {
-        //        Manufacturer = m,
-        //        Cars = g
-        //    })
-        //    .OrderBy(x => x.Manufacturer.Name);
-        //var document = new XDocument(new XElement("Manufacturers"));
-        //foreach (var group in groups)
-        //{
-        //    var element = new XElement("Manufacturer",
-        //                        new XAttribute("Name", group.Manufacturer.Name),
-        //                        new XAttribute("Country", group.Manufacturer.Country),
-        //                        new XElement("Cars",
-        //                        new XAttribute("Country", group.Manufacturer.Country),
-        //                        new XAttribute("CombinedSum", group.Cars.Sum(x => x.Combined)),
-        //                        group.Cars.OrderByDescending(x => x.Combined)
-        //                                   .Select(x => new XElement("Car",
-        //                                               new XAttribute("Model", x.Name),
-        //                                               new XAttribute("Combined", x.Combined)))
-        //                        ));
-        //    document.Root.Add(element);
-        //}
-        //document.Save("Output.xml");
-    }
 
-    //public void QueryXml()
-    //{
-    //    var document = XDocument.Load("fuel.xml");
-    //    var names = document
-    //        .Element("Cars")?
-    //        .Elements("Car")
-    //        .Where(x => x.Attribute("Manufacturer")?.Value == "BMW")
-    //        .Select(x => x.Attribute("Name")?.Value);
-    //    foreach (var name in names)
-    //    { Console.WriteLine(name); }
-    //}
-
-    //public void CreateXml()
-    //{
-    //    var records = _csvReader.ProcessCars("Resources\\Files\\fuel.csv");
-    //    var document = new XDocument();
-    //    var cars = new XElement("Cars", records
-    //                                     .Select(x =>
-    //                                     new XElement("Car",
-    //                                     new XAttribute("Name", x.Name),
-    //                                     new XAttribute("Combined", x.Combined),
-    //                                     new XAttribute("Manufacturer", x.Manufacturer))
-    //                                            )
-    //                            );
-
-    //    document.Add(cars);
-    //    document.Save("fuel.xml");
-    //}
 
     public void CommonSubmenuOptionsForRepositories<T>(IRepository<T> repo) where T : class, IEntity, new()
     {
-       
-        
-        var menuItems = new List<string> { "<-Back", "Print repository","New item from Console", "Add batch from CSV", "Export to XML"};
+        (int, int) position = Console.GetCursorPosition();
+        Console.SetCursorPosition(0, 3);
+        Console.WriteLine($"Repository [{typeof(T).Name}s] holds {repo.GetAll().Count()} items. Page size set to: {repo.printPageSize}");
+        Console.SetCursorPosition(position.Item1, position.Item2);
+
+        var menuItems = new List<string> { "<-Back", "Print repository", "New item from Console", "Add batch from CSV", "Setup" };
         var menuActionMap = new List<MenuItemAction>()
                             {() => {},
                              () => {PrintRepositoryInMenuForm(repo);},
@@ -257,104 +205,130 @@ public class App : IApp
                                     AddItemsFromCsvFiles<T>(path);
                                     PrintHeader();
                                    },
-                             () => {},
- 
+                             () => {RepositoryMenuSetup(repo);},
+
                              };
         new TextMenu(menuItems, menuActionMap).Run();
     }
 
+    public void RepositoryMenuSetup<T>(IRepository<T> repo) where T : class, IEntity, new()
+    {
+
+        var menuItems = new List<string> { "<-Back", "Set print page size", "Sort By" };
+        var menuActionMap = new List<MenuItemAction>()
+                            {() => { },
+                                () => {
+                                    Console.WriteLine();
+                                    Console.WriteLine($"Set print page size for [{typeof(T).Name}s] repository:");
+                                    Console.CursorVisible = true;
+                                    if (int.TryParse(Console.ReadLine(), out int pageSize) && pageSize > 0)
+                                    {
+                                    repo.printPageSize = pageSize;
+                                    Console.WriteLine($"Print page size set to = {pageSize}");
+                                    }
+                                    else
+                                    {
+                                    Console.WriteLine("Incorrect page size!");
+                                    }
+                                    WaitTillKeyPressed();
+                                    Console.Clear();
+                                    PrintHeader();
+                            },
+                             () => {Console.WriteLine();
+                                    List<string> propName = new List<string>{"Id","Name","Description" };
+                                    Console.WriteLine($"0 - sort by {propName[0]}");
+                                    Console.WriteLine($"1 - sort by {propName[1]}");
+                                    Console.WriteLine($"2 - sort by {propName[2]}");
+                                    Console.CursorVisible = true;
+                                    repo.sortBy=-1;
+                                    do
+                                    {
+                                        Console.WriteLine();
+                                        Console.Write("Enter your chioce: ");
+                                        if (int.TryParse(Console.ReadLine(), out int sortBy) && sortBy>=0 && sortBy<3)
+                                        {
+                                            repo.sortBy = sortBy;
+                                            Console.WriteLine();
+                                            Console.WriteLine($"[{typeof(T).Name}s] prints sorted by {propName[sortBy]}");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Incorrect selection. Try again!");
+                                        }
+                                    }
+                                    while(repo.sortBy<0 || repo.sortBy>3);
+                                    WaitTillKeyPressed();
+                                    Console.Clear();
+                                    PrintHeader();},
+                            };
+        new TextMenu(menuItems, menuActionMap).Run();
+    }
     public void PrintRepositoryInMenuForm<T>(IRepository<T> repo) where T : class, IEntity, new()
     {
-
         ConsoleKeyInfo menuExitKey;
-        var pageSize = 10;
-            var activePage = 1;
-            var pagesCount = (repo.GetAll().Count() + pageSize - 1) / pageSize;
-
-            do
-            {
-                var items = repo.GetAll()
-                                .Skip((activePage - 1) * pageSize)
-                                .Take(pageSize);
-
-                var menuActionMap = new List<MenuItemAction>();
-                var menuItems = items.Select(x => x.ToString()).ToList();
-
-                (int, int) position = Console.GetCursorPosition();
-                Console.SetCursorPosition(0, 3);
-                Console.WriteLine($"Page {activePage} of {pagesCount}. Left/Right arrows to jump pages or refresh.");
-                Console.SetCursorPosition(position.Item1, position.Item2);
-
-                foreach (var item in items)
-                {
-                    menuActionMap.Add(() => {
-                        (int, int) position = Console.GetCursorPosition();
-                        OnItemContextMenu(repo,item);
-                        Console.SetCursorPosition(position.Item1, position.Item2);
-                    }
-                                    );
-                }
-
-                menuItems.Insert(0, "<-Back");
-                menuActionMap.Insert(0, () => { activePage = 1; });
-
-                menuExitKey = new TextMenu(menuItems, menuActionMap, verticalArrowsActive, normalEnterAction).Run();
-                if (menuExitKey.Key == ConsoleKey.LeftArrow)
-                {
-                    if (activePage > 1) activePage--;
-                }
-                else if (menuExitKey.Key == ConsoleKey.RightArrow)
-                {
-                    if (activePage < pagesCount) activePage++;
-                }
-
-            }
-            while ((menuExitKey.Key == ConsoleKey.LeftArrow) ^ (menuExitKey.Key == ConsoleKey.RightArrow));
-        }
-    
-    public void RemoveItemFromRepository<T>(IRepository<T> repo, int position) where T : class, IEntity, new()
-    {
-        PrintRepositoryInMenuForm(repo);
-        Console.WriteLine();
-        Console.WriteLine($"Remove {typeof(T).Name} from repository {repo.GetType().Name.Remove(repo.GetType().Name.Length - 2)}");
-        Console.WriteLine("Enter the item's name or Id number: ");
-        Console.CursorVisible = true;
-        var itemName = Console.ReadLine();
-        Console.CursorVisible = false;
-        if (itemName != null)
+        var activePage = 1;
+        var pagesCount = (repo.GetAll().Count() + repo.printPageSize - 1) / repo.printPageSize;
+        do
         {
-            if (repo.GetItem(itemName) != null)
+            var items = repo.GetAll()
+                            .OrderBy(x => x.Id)
+                            .Skip((activePage - 1) * repo.printPageSize)
+                            .Take(repo.printPageSize);
+            switch (repo.sortBy)
             {
-                repo.Remove(repo.GetItem(itemName));
+                case 1:
+                    items = repo.GetAll()
+                                .OrderBy(x => x.Name)
+                                .Skip((activePage - 1) * repo.printPageSize)
+                                .Take(repo.printPageSize);
+                    break;
+                case 2:
+                    items = repo.GetAll()
+                                .OrderBy(x => x.Description)
+                                .Skip((activePage - 1) * repo.printPageSize)
+                                .Take(repo.printPageSize);
+                    break;
             }
-            else if (int.TryParse(itemName, out var itemNumber))
+            var menuActionMap = new List<MenuItemAction>();
+            var menuItems = items.Select(x => x.ToString()).ToList();
+            (int, int) position = Console.GetCursorPosition();
+            Console.SetCursorPosition(0, 3);
+            Console.WriteLine($"Page {activePage} of {pagesCount}. Left/Right arrows to jump pages or refresh.");
+            Console.SetCursorPosition(position.Item1, position.Item2);
+            foreach (var item in items)
             {
-                if (repo.GetItem(itemNumber) != null)
-                {
-                    repo.Remove(repo.GetItem(itemNumber));
-                }
-                else
-                {
-                    Console.WriteLine("Sorry, there's no item with such an Id.");
-                }
+                menuActionMap.Add(
+                                 () =>
+                                  {
+                                   (int, int) position = Console.GetCursorPosition();
+                                   OnItemContextMenu(repo, item);
+                                   Console.SetCursorPosition(position.Item1, position.Item2);
+                                  }
+                                 );
             }
-            else
+
+            menuItems.Insert(0, "<-Back");
+            menuActionMap.Insert(0, () => { activePage = 1; });
+
+            menuExitKey = new TextMenu(menuItems, menuActionMap, verticalArrowsActive, normalEnterAction).Run();
+            if (menuExitKey.Key == ConsoleKey.LeftArrow)
             {
-                Console.WriteLine("Sorry, there's no item with such a name nor Id.");
+                if (activePage > 1) activePage--;
             }
+            else if (menuExitKey.Key == ConsoleKey.RightArrow)
+            {
+                if (activePage < pagesCount) activePage++;
+            }
+
         }
-        PrintRepositoryInMenuForm(repo);
-        WaitTillKeyPressed();
+        while ((menuExitKey.Key == ConsoleKey.LeftArrow) ^ (menuExitKey.Key == ConsoleKey.RightArrow));
     }
     public void WaitTillKeyPressed()
     {
+        Console.CursorVisible = false;
         Console.WriteLine();
         Console.WriteLine("<Press any key to continue>");
         Console.ReadKey();
-        //if (clearConsole)
-        //{
-        //    PrintHeader();
-        //}
     }
     public void ResetDatabase(IRepository<Vendor> vendorRepo, IRepository<ProductionPart> componentRepo, IRepository<Product> productRepo, int position)                                        //Initialize Json files with sample data                
     {
@@ -363,16 +337,38 @@ public class App : IApp
         Console.WriteLine("==> Deleting old SQL Base and reding data from: Vendros.csv, ProductionParts.csv, Products.csv");
         _officeBaseAppDbContext.Database.EnsureDeleted();
         _officeBaseAppDbContext.Database.EnsureCreated();
-        ReadVendorsFromCsvFile("Resources\\Files\\Vendors.csv");
-        ReadProductionPartsFromCsvFile("Resources\\Files\\ProductionParts.csv");
-        ReadProductsFromCsvFile("Resources\\Files\\Products.csv");
+        var filePath = "Resources\\Files\\Vendors.csv";
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"No file at this path: {filePath}");
+        }
+        else
+        {
+            ReadVendorsFromCsvFile(filePath);
+        }
+        filePath = "Resources\\Files\\ProductionParts.csv";
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"No file at this path: {filePath}");
+        }
+        else
+        {
+            ReadProductionPartsFromCsvFile(filePath);
+        }
+        filePath = "Resources\\Files\\Products.csv";
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"No file at this path: {filePath}");
+        }
+        else
+        {
+            ReadProductsFromCsvFile(filePath);
+        }
         Console.ForegroundColor = ConsoleColor.Gray;
         Console.WriteLine();
         Console.WriteLine("Database seeded with demo data.");
         WaitTillKeyPressed();
     }
-
-
     public void ComponentProviderTest()
     {
         Console.WriteLine("-------------------------------------------------");
@@ -428,33 +424,16 @@ public class App : IApp
         }
         WaitTillKeyPressed();
     }
-
-    public static void Initialize(OfficeBaseAppDbContext _officeBaseAppDbContext)
-    {
-        if (_officeBaseAppDbContext.Database.CanConnect())
-        {
-            Console.WriteLine("Database exists.");
-            _officeBaseAppDbContext.Database.EnsureDeleted();
-            Console.WriteLine("Database deleted.");
-        }
-        _officeBaseAppDbContext.Database.EnsureCreated();
-        Console.WriteLine("New Database created.");
-        _officeBaseAppDbContext.SaveChanges();
-        Console.WriteLine("Database seeded with demo data.");
-
-    }
-
     private void ReadVendorsFromCsvFile(string path)
     {
-
-        var vendors = _csvReader.ProcessVendors(path); 
+        var vendors = _csvReader.ProcessVendors(path);
         foreach (var vendor in vendors)
         {
-            _vendorRepository.Add(new Vendor()          
+            _vendorRepository.Add(new Vendor()
             {
                 Name = vendor.Name,
                 Contact = vendor.Contact,
-                SupportContact = vendor.SupportContact,
+                Description = vendor.Description,
                 Country = vendor.Country,
                 VendorCertificate = vendor.VendorCertificate,
 
@@ -462,16 +441,15 @@ public class App : IApp
         }
         _officeBaseAppDbContext.SaveChanges();
     }
-
-    private void ReadProductionPartsFromCsvFile(string path) 
+    private void ReadProductionPartsFromCsvFile(string path)
     {
         var productionParts = _csvReader.ProcessProductionParts(path);
         foreach (var productionPart in productionParts)
         {
             _productionPartRepository.Add(new ProductionPart(productionPart.Name,
                                                              productionPart.Price,
-                                                             productionPart.PartVendor,
                                                              productionPart.Description,
+                                                             productionPart.PartVendor,
                                                              productionPart.PartManufacturer));
         }
         _officeBaseAppDbContext.SaveChanges();
@@ -491,20 +469,23 @@ public class App : IApp
         }
         _officeBaseAppDbContext.SaveChanges();
     }
-
     private void AddItemsFromCsvFiles<T>(string path) where T : class, IEntity, new()
     {
         var _path = path;
         Type typeOfT = typeof(T);
-        if (typeOfT == typeof(Product))
+        if (!File.Exists(_path))
         {
-            if(_path.IsNullOrEmpty()) {_path = "Resources\\Files\\Products_batch.csv";}
+            Console.WriteLine("No such a filename at this path!");
+        }
+        else if (typeOfT == typeof(Product))
+        {
+            if (_path.IsNullOrEmpty()) { _path = "Resources\\Files\\Products_batch.csv"; }
             Console.WriteLine(_path);
             ReadProductsFromCsvFile(_path);
         }
         else if (typeOfT == typeof(ProductionPart))
         {
-            if (_path.IsNullOrEmpty()) { _path = "Resources\\Files\\ProductionParts_batch.csv";}
+            if (_path.IsNullOrEmpty()) { _path = "Resources\\Files\\ProductionParts_batch.csv"; }
             Console.WriteLine(_path);
             ReadProductionPartsFromCsvFile(_path);
         }
@@ -514,21 +495,18 @@ public class App : IApp
             Console.WriteLine(_path);
             ReadVendorsFromCsvFile(_path);
         }
-        else 
-            {
+        else
+        {
             throw new NotSupportedException($"Unsupported type: {typeOfT.Name}");
-            }
+        }
         WaitTillKeyPressed();
     }
-
-   
-
     public void OnItemContextMenu<T>(IRepository<T> repo, T item) where T : class, IEntity, new()
     {
         Console.WriteLine();
         Console.BackgroundColor = ConsoleColor.Gray;
         Console.ForegroundColor = ConsoleColor.Black;
-        Console.WriteLine(item.ToString());
+        Console.WriteLine($"Selected item: {item.ToString()}");
         Console.BackgroundColor = ConsoleColor.Black;
         Console.ForegroundColor = ConsoleColor.Gray;
         Console.WriteLine();
@@ -537,14 +515,18 @@ public class App : IApp
         var menuActionMap = new List<MenuItemAction>()
                             {() => {},
                              () => {repo.Remove(item);},
-                             () => {},                                    
+                             () => {item.EnterPropertiesFromConsole();
+                                    repo.Save();
+                                    WaitTillKeyPressed();
+                                    PrintHeader();
+                                   },
                              () => {var newItem = item.Copy();
                                    if (newItem != null)
                                    {newItem.Id = 0;
-                                    repo.Add(newItem);                                   
+                                    repo.Add(newItem);
                                    };
                                   },
                             };
-        new TextMenu(menuItems, menuActionMap,!verticalArrowsActive,!normalEnterAction).Run();
+        new TextMenu(menuItems, menuActionMap, !verticalArrowsActive, !normalEnterAction).Run();
     }
 }

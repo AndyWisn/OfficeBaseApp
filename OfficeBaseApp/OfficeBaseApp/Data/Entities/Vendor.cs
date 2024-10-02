@@ -9,14 +9,14 @@ public class Vendor : IEntity
         Name = name;
         Contact = contact;
         VendorCertificate = certificate;
-        SupportContact = supportContact;
+        Description = supportContact;
         Country = country;
     }
     public int Id { get; set; }
     public string? Name { get; set; }
     public string? Contact { get; set; }
     public string? VendorCertificate { get; set; }
-    public string? SupportContact { get; set; }
+    public string? Description { get; set; }
     public string? Country { get; set; }
     public void EnterPropertiesFromConsole()
     {
@@ -30,11 +30,10 @@ public class Vendor : IEntity
         Console.WriteLine("Enter certificates:");
         VendorCertificate = Console.ReadLine();
         Console.WriteLine("Enter support contact:");
-        SupportContact = Console.ReadLine();
+        Description = Console.ReadLine();
         Console.WriteLine("Enter vendor's country:");
         Country = Console.ReadLine();
         Console.CursorVisible = false;
-        //return new Vendor(name, repName, repSurname, contact, certificates, support);
     }
-    public override string ToString() => string.Format($"Vendor:{Name} Country:{Country}");
+    public override string ToString() => string.Format("{0,-5} {1,-10} {2,-10} {3,-20}", Id, Name, Country, Contact);
 }

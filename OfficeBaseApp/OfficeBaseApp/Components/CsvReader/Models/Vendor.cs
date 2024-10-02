@@ -7,7 +7,7 @@ public class VendorModel
     public string? RepresentativeLastName { get; set; }
     public string? Contact { get; set; }
     public string? VendorCertificate { get; set; }
-    public string? SupportContact { get; set; }
+    public string? Description { get; set; }
     public string? Country { get; set; }
 
 }

@@ -6,6 +6,9 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
 {
     private readonly DbSet<T> _dbSet;
     private readonly OfficeBaseAppDbContext _officeBaseAppDbContext;
+    public int printPageSize { get; set; } = 10;
+    public int sortBy { get; set; } = 0;
+
     public SqlRepository(OfficeBaseAppDbContext officeBaseAppDbContext)
     {
         _officeBaseAppDbContext = officeBaseAppDbContext;

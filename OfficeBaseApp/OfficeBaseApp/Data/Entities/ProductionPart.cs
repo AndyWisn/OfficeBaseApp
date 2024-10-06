@@ -10,7 +10,7 @@ public class ProductionPart : IEntity
         Description = description;
         Price = price;
         PartManufacturer = partManufacturer;
-        PartVendor = partVendor;    
+        PartVendor = partVendor;
     }
     public int Id { get; set; }
     public string? Name { get; set; }
@@ -41,5 +41,5 @@ public class ProductionPart : IEntity
         PartVendor = Console.ReadLine();
         Console.CursorVisible = false;
     }
-    public override string ToString() => string.Format("{0,-5} {1,-30} {2,-30} {3,-8} {4,-20}", Id, Name, PartManufacturer, Price, PartVendor);
+    public override string ToString() => string.Format("{0,-5} {1,-30} {2,-40} {3,-8} {4,-10}", Id, Name, PartManufacturer, Price, PartVendor);
 }

@@ -1,10 +1,10 @@
 ﻿using OfficeBaseApp.Data.Entities;
-using OfficeBaseApp.Data.Repositories;
 
 namespace OfficeBaseApp.Components.DataProviders;
 public interface IGenericDataProvider<T> where T : class, IEntity
 {
-    public IEnumerable<T> GetAll();
+    public List<T> GetAll();
+    public List<T> GetAllWithUniqueNames();
     public List<string> GetUniqueNames();
     public List<T> OrderByName();
     public List<T> OrderByNameDescending();

@@ -22,5 +22,4 @@ services.AddSingleton<ICsvReader, CsvReader>();
 services.AddSingleton<IXmlWriter, XmlWriter>();
 var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetService<IApp>()!;
-
 app.Run();

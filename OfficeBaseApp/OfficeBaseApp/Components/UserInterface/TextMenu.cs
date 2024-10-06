@@ -37,8 +37,7 @@ public class TextMenu : ITextMenu
             }
         }
         PrintHeader();
-        return keyPressedOnExit;
-      
+        return keyPressedOnExit;      
     }
     private void PrintMenu(int actualItem)
     {

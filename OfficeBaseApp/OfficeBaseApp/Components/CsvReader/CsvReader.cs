@@ -1,10 +1,7 @@
-﻿using OfficeBaseApp.Components.CsvReader.Extensions;
-using OfficeBaseApp.Components.CsvReader.Models;
-using System.Diagnostics.Metrics;
+﻿using OfficeBaseApp.Components.CsvReader.Models;
 using System.Globalization;
 
 namespace OfficeBaseApp.Components.CsvReader;
-
 public class CsvReader : ICsvReader
 {
     public List<ProductModel> ProcessProducts(string filePath)
@@ -32,7 +29,6 @@ public class CsvReader : ICsvReader
             return products.ToList();
         }
     }
-
     public List<ProductionPartModel> ProcessProductionParts(string filePath)
     {
         if (!File.Exists(filePath))

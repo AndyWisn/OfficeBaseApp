@@ -29,8 +29,6 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     }
     public T? GetItem(int id)
     {
-        //return _dbSet.Find(id);
-
         return _dbSet.SingleOrDefault(x => x.Id == id, null);
     }
     public T? GetItem(string name)

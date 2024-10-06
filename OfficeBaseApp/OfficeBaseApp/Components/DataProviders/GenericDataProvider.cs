@@ -10,11 +10,18 @@ public abstract class GenericDataProvider<T> : IGenericDataProvider<T> where T :
     {
         _repository = repository;
     }
-    public IEnumerable<T> GetAll()
+    public List<T> GetAll()
     {
-        return _repository.GetAll();
+        return _repository.GetAll().ToList();
     }
-
+    public List<T> GetAllWithUniqueNames()
+    {
+        return _repository.GetAll()
+                .GroupBy(x => x.Name)
+                .Where(x => x.Count() == 1)
+                .Select(x => x.First())
+                .ToList();
+    }
     public List<string> GetUniqueNames()
     {
         var components = _repository.GetAll();

@@ -49,7 +49,6 @@ public class Product : IEntity
         if (!components.IsNullOrEmpty()) { componentList = components.Split(',').Select(int.Parse).ToList(); }
         ProductionPartsId = componentList;
         Console.CursorVisible = false;
-        //return new Product(name, description, componentList);
     }
     public override string ToString() => string.Format("{0,-5} {1,-35} {2,-30} {3,-5} {4,-5}", Id, Name, Description, Price, ComponentListInString);
 }

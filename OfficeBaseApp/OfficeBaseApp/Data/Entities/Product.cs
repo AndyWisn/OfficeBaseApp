@@ -1,6 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-
-namespace OfficeBaseApp.Data.Entities;
+﻿namespace OfficeBaseApp.Data.Entities;
 public class Product : IEntity
 {
     public Product()

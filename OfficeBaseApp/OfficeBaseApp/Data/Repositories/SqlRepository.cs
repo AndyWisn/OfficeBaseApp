@@ -20,8 +20,7 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         _dbSet.Add(item);
         ItemAdded?.Invoke(this, item);
-        Save();
-        
+        Save(); 
     }
     public IEnumerable<T> GetAll()
     {
@@ -35,7 +34,6 @@ public class SqlRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         return _dbSet.FirstOrDefault(x => x.Name == name, null);
     }
-
     public void Remove(T item)
     {
         if (item != null)

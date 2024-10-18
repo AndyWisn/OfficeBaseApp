@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using OfficeBaseApp.Data.Entities;
+﻿using System.Text.Json;
 namespace OfficeBaseApp.Data.Entities.Extensions;
 public static class EntityExtensions
 {

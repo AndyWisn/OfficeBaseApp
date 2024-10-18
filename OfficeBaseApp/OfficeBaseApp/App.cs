@@ -51,13 +51,13 @@ public class App : IApp
             {
                 () => {Console.Clear(); Environment.Exit(0);},
                 () => ResetDatabase(_vendorRepository,_productionPartRepository, _productRepository, menuItems.Count + 6),
-                      () => {CommonSubmenuOptionsForRepositories<Vendor>(_vendorRepository);},
-                      () => {CommonSubmenuOptionsForRepositories<ProductionPart>(_productionPartRepository);},
-                      () => {CommonSubmenuOptionsForRepositories<Product>(_productRepository); },
-                      () => {Console.Clear();
-                              _xmlWriter.CreateOutputXml();
-                              WaitTillKeyPressed();
-                               PrintHeader();}
+                () => {CommonSubmenuOptionsForRepositories<Vendor>(_vendorRepository);},
+                () => {CommonSubmenuOptionsForRepositories<ProductionPart>(_productionPartRepository);},
+                () => {CommonSubmenuOptionsForRepositories<Product>(_productRepository); },
+                () => {Console.Clear();
+                       _xmlWriter.CreateOutputXml();
+                       WaitTillKeyPressed();
+                       PrintHeader();}
             };
         new TextMenu(menuItems, menuActionMap).Run();
     }
@@ -70,70 +70,75 @@ public class App : IApp
 
         var menuItems = new List<string> { "<-Back", "Print repository", "New item from Console", "Add batch from CSV", "Setup" };
         var menuActionMap = new List<MenuItemAction>()
-                            {() => {},
-                             () => {PrintRepositoryInMenuForm(repo);},
-                             () => {var item = new T();
-                                    item.EnterPropertiesFromConsole();
-                                    repo.Add(item);
-                                    WaitTillKeyPressed();
-                                    PrintHeader();
-                                   },
-                             () => {Console.WriteLine();
-                                    Console.WriteLine("Enter file path & name or hit [Enter] for default path:");
-                                    var path = Console.ReadLine();
-                                    AddItemsFromCsvFiles<T>(path);
-                                    PrintHeader();
-                                   },
-                             () => {RepositoryMenuSetup(repo);},
-                             };
+                            {
+                                () => {},
+                                () => {PrintRepositoryInMenuForm(repo);},
+                                () => {var item = new T();
+                                       item.EnterPropertiesFromConsole();
+                                       repo.Add(item);
+                                       WaitTillKeyPressed();
+                                       PrintHeader();
+                                       },
+                                () => {Console.WriteLine();
+                                       Console.WriteLine("Enter file path & name or hit [Enter] for default path:");
+                                       var path = Console.ReadLine();
+                                       AddItemsFromCsvFiles<T>(path);
+                                       PrintHeader();
+                                      },
+                                () => {RepositoryMenuSetup(repo);},
+                            };
         new TextMenu(menuItems, menuActionMap).Run();
     }
     public void RepositoryMenuSetup<T>(IRepository<T> repo) where T : class, IEntity, new()
     {
         var menuItems = new List<string> { "<-Back", "Set print page size", "Sort By" };
         var menuActionMap = new List<MenuItemAction>()
-                            {() => { },
+                            {   () => { },
                                 () => {
-                                    Console.WriteLine();
-                                    Console.WriteLine($"Set print page size for [{typeof(T).Name}s] repository:");
-                                    Console.CursorVisible = true;
-                                    if (int.TryParse(Console.ReadLine(), out int pageSize) && pageSize > 0)
-                                    {
-                                    repo.printPageSize = pageSize;
-                                    Console.WriteLine($"Print page size set to = {pageSize}");
-                                    }
-                                    else
-                                    {
-                                    Console.WriteLine("Incorrect page size!");
-                                    }
-                                    WaitTillKeyPressed();
-                                    Console.Clear();
-                                    PrintHeader();
-                            },
-                             () => {Console.WriteLine();
-                                    List<string> propName = new List<string>{"Id","Name","Description" };
-                                    Console.WriteLine($"0 - sort by {propName[0]}");
-                                    Console.WriteLine($"1 - sort by {propName[1]}");
-                                    Console.WriteLine($"2 - sort by {propName[2]}");
-                                    Console.CursorVisible = true;
-                                    repo.sortBy=-1;
-                                    do
-                                    {
                                         Console.WriteLine();
-                                        Console.Write("Enter your chioce: ");
-                                        if (int.TryParse(Console.ReadLine(), out int sortBy) && sortBy>=0 && sortBy<3)
+                                        Console.WriteLine($"Set print page size for [{typeof(T).Name}s] repository:");
+                                        Console.CursorVisible = true;
+                                        if (int.TryParse(Console.ReadLine(), out int pageSize) && pageSize > 0)
                                         {
+                                        repo.printPageSize = pageSize;
+                                        Console.WriteLine($"Print page size set to = {pageSize}");
+                                        }
+                                        else
+                                        {
+                                        Console.WriteLine("Incorrect page size!");
+                                        }
+                                        WaitTillKeyPressed();
+                                        Console.Clear();
+                                        PrintHeader();
+                                      },
+                                () => {
+                                        Console.WriteLine();
+                                        List<string> propName = new List<string>{"Id","Name","Description" };
+                                        Console.WriteLine($"0 - sort by {propName[0]}");
+                                        Console.WriteLine($"1 - sort by {propName[1]}");
+                                        Console.WriteLine($"2 - sort by {propName[2]}");
+                                        Console.CursorVisible = true;
+                                        repo.sortBy=-1;
+                                        do
+                                        {
+                                            Console.WriteLine();
+                                            Console.Write("Enter your chioce: ");
+                                            if (int.TryParse(Console.ReadLine(), out int sortBy) && sortBy>=0 && sortBy<3)
+                                            {
                                             repo.sortBy = sortBy;
                                             Console.WriteLine();
                                             Console.WriteLine($"[{typeof(T).Name}s] prints sorted by {propName[sortBy]}");
+                                            }
+                                            else
+                                            {
+                                            Console.WriteLine("Incorrect selection. Try again!");
+                                            }
                                         }
-                                        else Console.WriteLine("Incorrect selection. Try again!");
-                                    }
-                                    while(repo.sortBy<0 || repo.sortBy>3);
-                                    WaitTillKeyPressed();
-                                    Console.Clear();
-                                    PrintHeader();},
-                            };
+                                        while(repo.sortBy<0 || repo.sortBy>3);
+                                        WaitTillKeyPressed();
+                                        Console.Clear();
+                                        PrintHeader();},
+                           };
         new TextMenu(menuItems, menuActionMap).Run();
     }
     public void PrintRepositoryInMenuForm<T>(IRepository<T> repo) where T : class, IEntity, new()
@@ -147,18 +152,17 @@ public class App : IApp
             switch (repo.sortBy)
             {
                 case 0:
-                    items = items.OrderBy(x => x.Id);                              
+                    items = items.OrderBy(x => x.Id);
                     break;
                 case 1:
-                    items = items.OrderBy(x => x.Name);                               
+                    items = items.OrderBy(x => x.Name);
                     break;
                 case 2:
-                    items = items.OrderBy(x => x.Description);                                
+                    items = items.OrderBy(x => x.Description);
                     break;
             }
-            items=items.Skip((activePage - 1) * repo.printPageSize)
+            items = items.Skip((activePage - 1) * repo.printPageSize)
                        .Take(repo.printPageSize);
-
             var menuActionMap = new List<MenuItemAction>();
             var menuItems = items.Select(x => x.ToString()).ToList();
             (int, int) position = Console.GetCursorPosition();
@@ -167,12 +171,12 @@ public class App : IApp
             Console.SetCursorPosition(position.Item1, position.Item2);
             foreach (var item in items)
             {
-                menuActionMap.Add(
-                                 () =>{ (int, int) position = Console.GetCursorPosition();
-                                        OnItemContextMenu(repo, item);
-                                        Console.SetCursorPosition(position.Item1, position.Item2);
-                                      }
-                                 );
+                menuActionMap.Add(() =>
+                {
+                    (int, int) position = Console.GetCursorPosition();
+                    OnItemContextMenu(repo, item);
+                    Console.SetCursorPosition(position.Item1, position.Item2);
+                });
             }
             menuItems.Insert(0, "<-Back");
             menuActionMap.Insert(0, () => { activePage = 1; });
@@ -195,7 +199,10 @@ public class App : IApp
         Console.WriteLine("<Press any key to continue>");
         Console.ReadKey();
     }
-    public void ResetDatabase(IRepository<Vendor> vendorRepo, IRepository<ProductionPart> componentRepo, IRepository<Product> productRepo, int position)                                        //Initialize Json files with sample data                
+    public void ResetDatabase(IRepository<Vendor> vendorRepo,
+                              IRepository<ProductionPart> componentRepo,
+                              IRepository<Product> productRepo,
+                              int position)
     {
         Console.SetCursorPosition(0, position);
         Console.ForegroundColor = ConsoleColor.Blue;
@@ -253,7 +260,7 @@ public class App : IApp
             }
         }
         else if (typeOfT == typeof(Product))
-            {
+        {
             var products = _csvReader.ProcessProducts(path);
             foreach (var product in products)
             {
@@ -272,12 +279,12 @@ public class App : IApp
             {
                 _productionPartRepository.Add(new ProductionPart()
                 {
-                    Name=productionPart.Name,
-                    Price=productionPart.Price,
-                    Description=productionPart.Description,
-                    PartVendor=productionPart.PartVendor,
-                    PartManufacturer=productionPart.PartManufacturer,
-                    });                                             
+                    Name = productionPart.Name,
+                    Price = productionPart.Price,
+                    Description = productionPart.Description,
+                    PartVendor = productionPart.PartVendor,
+                    PartManufacturer = productionPart.PartManufacturer,
+                });
             }
         }
         _officeBaseAppDbContext.SaveChanges();
@@ -287,7 +294,7 @@ public class App : IApp
         Type typeOfT = typeof(T);
         if (typeOfT == typeof(Product))
         {
-            if (path.IsNullOrEmpty()) path = "Resources\\Files\\Products_batch.csv"; 
+            if (path.IsNullOrEmpty()) path = "Resources\\Files\\Products_batch.csv";
         }
         else if (typeOfT == typeof(ProductionPart))
         {

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeBaseApp.Data.Entities;
+﻿using OfficeBaseApp.Data.Entities;
 using OfficeBaseApp.Data.Repositories;
 
 namespace OfficeBaseApp.Components.DataProviders;
@@ -17,16 +16,15 @@ public abstract class GenericDataProvider<T> : IGenericDataProvider<T> where T :
     public List<T> GetAllWithUniqueNames()
     {
         return _repository.GetAll()
-                .GroupBy(x => x.Name)
-                .Where(x => x.Count() == 1)
-                .Select(x => x.First())
-                .ToList();
+                          .GroupBy(x => x.Name)
+                          .Where(x => x.Count() == 1)
+                          .Select(x => x.First())
+                          .ToList();
     }
     public List<string> GetUniqueNames()
     {
         var components = _repository.GetAll();
-        var names = components.Select(x => x.Name).Distinct().ToList();
-        return names;
+        return components.Select(x => x.Name).Distinct().ToList();
     }
     public List<T> OrderByName()
     {
@@ -46,35 +44,31 @@ public abstract class GenericDataProvider<T> : IGenericDataProvider<T> where T :
     public List<T> SkipItems(int howMany)
     {
         var components = _repository.GetAll();
-        return components
-           .OrderBy(x => x.Name)
-           .Skip(howMany)
-           .ToList();
+        return components.OrderBy(x => x.Name)
+                         .Skip(howMany)
+                         .ToList();
     }
     public List<T> SkipItemsWhileNameStartsWith(string prefix)
     {
         var components = _repository.GetAll();
-        return components
-           .OrderBy(x => x.Name)
-           .SkipWhile(x => x.Name.StartsWith(prefix))
-           .ToList();
+        return components.OrderBy(x => x.Name)
+                         .SkipWhile(x => x.Name.StartsWith(prefix))
+                         .ToList();
     }
     public List<string> DistinctAllNames()
     {
         var components = _repository.GetAll();
-        return components
-           .Select(x => x.Name)
-           .Distinct()
-           .OrderBy(c => c)
-           .ToList();
+        return components.Select(x => x.Name)
+                         .Distinct()
+                         .OrderBy(c => c)
+                         .ToList();
     }
     public List<T> DistinctByNames()
     {
         var components = _repository.GetAll();
-        return components
-           .DistinctBy(x => x.Name)
-           .OrderBy(x => x.Name)
-           .ToList();
+        return components.DistinctBy(x => x.Name)
+                         .OrderBy(x => x.Name)
+                         .ToList();
     }
     public List<T[]> ChunkItems(int size)
     {

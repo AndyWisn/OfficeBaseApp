@@ -33,7 +33,7 @@ public class CsvReader : ICsvReader
     {
         if (!File.Exists(filePath))
         {
-            Console.WriteLine("No such a filename at this path.");
+            Console.WriteLine("No file at this path.");
             return new List<ProductionPartModel>();
         }
         else
@@ -45,13 +45,13 @@ public class CsvReader : ICsvReader
                 {
                     var columns = x.Split(',');
                     return new ProductionPartModel()
-                    {
-                        Name = columns[0],
-                        PartManufacturer = columns[1],
-                        Description = columns[2],
-                        Price = float.Parse(columns[3], CultureInfo.InvariantCulture),
-                        PartVendor = columns[4],
-                    };
+                        {
+                            Name = columns[0],
+                            PartManufacturer = columns[1],
+                            Description = columns[2],
+                            Price = float.Parse(columns[3], CultureInfo.InvariantCulture),
+                            PartVendor = columns[4],
+                        };
                 });
             return productionParts.ToList();
         }
@@ -60,7 +60,7 @@ public class CsvReader : ICsvReader
     {
         if (!File.Exists(filePath))
         {
-            Console.WriteLine("No such a filename at this path.");
+            Console.WriteLine("No file at this path.");
             return new List<VendorModel>();
         }
         else

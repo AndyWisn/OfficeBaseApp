@@ -1,6 +1,7 @@
 ﻿using OfficeBaseApp.Data.Entities;
 
 namespace OfficeBaseApp.Components.DataProviders;
+
 public interface IGenericDataProvider<T> where T : class, IEntity
 {
     public List<T> GetAll();

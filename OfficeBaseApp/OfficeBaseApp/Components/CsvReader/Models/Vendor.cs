@@ -1,4 +1,5 @@
 ﻿namespace OfficeBaseApp.Components.CsvReader.Models;
+
 public class VendorModel
 {
     public int Id { get; set; }

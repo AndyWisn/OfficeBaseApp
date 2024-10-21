@@ -2,6 +2,7 @@
 using System.Globalization;
 
 namespace OfficeBaseApp.Components.CsvReader;
+
 public class CsvReader : ICsvReader
 {
     public List<ProductModel> ProcessProducts(string filePath)
@@ -29,6 +30,7 @@ public class CsvReader : ICsvReader
             return products.ToList();
         }
     }
+
     public List<ProductionPartModel> ProcessProductionParts(string filePath)
     {
         if (!File.Exists(filePath))
@@ -56,6 +58,7 @@ public class CsvReader : ICsvReader
             return productionParts.ToList();
         }
     }
+
     public List<VendorModel> ProcessVendors(string filePath)
     {
         if (!File.Exists(filePath))

@@ -1,12 +1,11 @@
-﻿namespace OfficeBaseApp.Data.Repositories.Extensions;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using OfficeBaseApp.Data.Entities;
-using OfficeBaseApp.Data.Repositories;
+
+namespace OfficeBaseApp.Data.Repositories.Extensions;
 
 public static class RepositoryExtensions
 {
-    public static void AddBatch<T>(this IRepository<T> repository, T[] items)
-       where T : class, IEntity
+    public static void AddBatch<T>(this IRepository<T> repository, T[] items) where T : class, IEntity
     {
         foreach (var item in items)
         {
@@ -14,11 +13,13 @@ public static class RepositoryExtensions
         }
         repository.Save();
     }
+
     public static void SetUp<T>(this IRepository<T> repository) where T : class, IEntity
     {
         repository.ItemAdded += RepositoryOnItemAdded; 
         repository.ItemRemoved += RepositoryOnItemRemoved;
     }
+
     public static void RepositoryOnItemAdded(object? sender, IEntity e)
     {
         using (var writer = File.AppendText("OfficeBaseApp_Backlog.TXT"))
@@ -30,6 +31,7 @@ public static class RepositoryExtensions
             }
         }
     }
+
     public static void RepositoryOnItemRemoved(object? sender, IEntity e)
     {
         using (var writer = File.AppendText("OfficeBaseApp_Backlog.TXT"))
@@ -41,6 +43,7 @@ public static class RepositoryExtensions
             }
         }
     }
+
     public static void WriteAllToConsole(this IReadRepository<IEntity> genericRepository)
     {
         var items = genericRepository.GetAll();

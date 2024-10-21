@@ -1,9 +1,11 @@
 ﻿namespace OfficeBaseApp.Data.Entities;
+
 public class Vendor : IEntity
 {
     public Vendor()
     {
     }
+
     public Vendor(string name, string representativeFirstName, string representativeLastName, string contact, string certificate, string supportContact, string country)
     {
         Name = name;
@@ -12,12 +14,14 @@ public class Vendor : IEntity
         Description = supportContact;
         Country = country;
     }
+
     public int Id { get; set; }
     public string? Name { get; set; }
     public string? Contact { get; set; }
     public string? VendorCertificate { get; set; }
     public string? Description { get; set; }
     public string? Country { get; set; }
+
     public void EnterPropertiesFromConsole()
     {
         Console.WriteLine();
@@ -35,5 +39,6 @@ public class Vendor : IEntity
         Country = Console.ReadLine();
         Console.CursorVisible = false;
     }
+
     public override string ToString() => string.Format("{0,-5} {1,-10} {2,-10} {3,-20}", Id, Name, Country, Contact);
 }

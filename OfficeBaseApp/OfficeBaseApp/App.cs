@@ -11,6 +11,7 @@ using OfficeBaseApp.Data.Repositories.Extensions;
 using static OfficeBaseApp.Components.TextMenu.TextMenu;
 
 namespace OfficeBaseApp;
+
 public class App : IApp
 {
     private readonly IRepository<Vendor> _vendorRepository;
@@ -22,6 +23,7 @@ public class App : IApp
     private readonly OfficeBaseAppDbContext _officeBaseAppDbContext;
     private const bool verticalArrowsActive = true;
     private const bool normalEnterAction = true;
+
     public App(IRepository<Vendor> vendorRepository,
                IRepository<ProductionPart> productionPartRepository,
                IRepository<Product> productRepository,
@@ -42,9 +44,9 @@ public class App : IApp
         _officeBaseAppDbContext = officeBaseAppDbContext;
         _officeBaseAppDbContext.Database.EnsureCreated();
     }
+
     public void Run()
-    {
-        Console.Clear();
+    {       
         PrintHeader();
         var menuItems = new List<string>() { "<-Exit", "Reset Db & read CSV data", "Vendors", "Production Parts", "Products", "Save XML summary" };
         var menuActionMap = new List<MenuItemAction>()
@@ -61,13 +63,13 @@ public class App : IApp
             };
         new TextMenu(menuItems, menuActionMap).Run();
     }
+
     public void CommonSubmenuOptionsForRepositories<T>(IRepository<T> repo) where T : class, IEntity, new()
     {
         (int, int) position = Console.GetCursorPosition();
         Console.SetCursorPosition(0, 3);
         Console.WriteLine($"Repository [{typeof(T).Name}s] holds {repo.GetAll().Count()} items. Page size set to: {repo.printPageSize}");
         Console.SetCursorPosition(position.Item1, position.Item2);
-
         var menuItems = new List<string> { "<-Back", "Print repository", "New item from Console", "Add batch from CSV", "Setup" };
         var menuActionMap = new List<MenuItemAction>()
                             {
@@ -89,6 +91,7 @@ public class App : IApp
                             };
         new TextMenu(menuItems, menuActionMap).Run();
     }
+
     public void RepositoryMenuSetup<T>(IRepository<T> repo) where T : class, IEntity, new()
     {
         var menuItems = new List<string> { "<-Back", "Set print page size", "Sort By" };
@@ -141,6 +144,7 @@ public class App : IApp
                            };
         new TextMenu(menuItems, menuActionMap).Run();
     }
+
     public void PrintRepositoryInMenuForm<T>(IRepository<T> repo) where T : class, IEntity, new()
     {
         ConsoleKeyInfo menuExitKey;
@@ -192,6 +196,7 @@ public class App : IApp
         }
         while ((menuExitKey.Key == ConsoleKey.LeftArrow) ^ (menuExitKey.Key == ConsoleKey.RightArrow));
     }
+
     public void WaitTillKeyPressed()
     {
         Console.CursorVisible = false;
@@ -199,6 +204,7 @@ public class App : IApp
         Console.WriteLine("<Press any key to continue>");
         Console.ReadKey();
     }
+
     public void ResetDatabase(IRepository<Vendor> vendorRepo,
                               IRepository<ProductionPart> componentRepo,
                               IRepository<Product> productRepo,
@@ -241,7 +247,8 @@ public class App : IApp
         Console.WriteLine("Database seeded with demo data.");
         WaitTillKeyPressed();
     }
-    private void ReadItemsFromCsvFile<T>(string path) where T : class, IEntity, new()
+
+    public void ReadItemsFromCsvFile<T>(string path) where T : class, IEntity, new()
     {
         Type typeOfT = typeof(T);
         if (typeOfT == typeof(Vendor))
@@ -289,30 +296,7 @@ public class App : IApp
         }
         _officeBaseAppDbContext.SaveChanges();
     }
-    private void AddItemsFromCsvFiles<T>(string path) where T : class, IEntity, new()
-    {
-        Type typeOfT = typeof(T);
-        if (typeOfT == typeof(Product))
-        {
-            if (path.IsNullOrEmpty()) path = "Resources\\Files\\Products_batch.csv";
-        }
-        else if (typeOfT == typeof(ProductionPart))
-        {
-            if (path.IsNullOrEmpty()) { path = "Resources\\Files\\ProductionParts_batch.csv"; }
-        }
-        else if (typeOfT == typeof(Vendor))
-        {
-            if (path.IsNullOrEmpty()) { path = "Resources\\Files\\Vendors_batch.csv"; }
-        }
-        else
-        {
-            throw new NotSupportedException($"Unsupported type: {typeOfT.Name}");
-        }
-        Console.WriteLine(path);
-        if (!File.Exists(path)) Console.WriteLine("No such a filename at this path!");
-        else ReadItemsFromCsvFile<T>(path);
-        WaitTillKeyPressed();
-    }
+
     public void OnItemContextMenu<T>(IRepository<T> repo, T item) where T : class, IEntity, new()
     {
         Console.WriteLine();
@@ -340,5 +324,30 @@ public class App : IApp
                                   },
                             };
         new TextMenu(menuItems, menuActionMap, !verticalArrowsActive, !normalEnterAction).Run();
+    }
+
+    public void AddItemsFromCsvFiles<T>(string path) where T : class, IEntity, new()
+    {
+        Type typeOfT = typeof(T);
+        if (typeOfT == typeof(Product))
+        {
+            if (path.IsNullOrEmpty()) path = "Resources\\Files\\Products_batch.csv";
+        }
+        else if (typeOfT == typeof(ProductionPart))
+        {
+            if (path.IsNullOrEmpty()) { path = "Resources\\Files\\ProductionParts_batch.csv"; }
+        }
+        else if (typeOfT == typeof(Vendor))
+        {
+            if (path.IsNullOrEmpty()) { path = "Resources\\Files\\Vendors_batch.csv"; }
+        }
+        else
+        {
+            throw new NotSupportedException($"Unsupported type: {typeOfT.Name}");
+        }
+        Console.WriteLine(path);
+        if (!File.Exists(path)) Console.WriteLine("No such a filename at this path!");
+        else ReadItemsFromCsvFile<T>(path);
+        WaitTillKeyPressed();
     }
 }

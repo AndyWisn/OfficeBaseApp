@@ -2,17 +2,20 @@
 using System.Xml.Linq;
 
 namespace OfficeBaseApp.Components.XmlWriter;
+
 public class XmlWriter : IXmlWriter 
 {
     private readonly IProductionPartProvider _productionPartProvider;
     private readonly IVendorProvider _vendorProvider;
     private readonly IProductProvider _productProvider;
+
     public XmlWriter(IProductionPartProvider productionPartProvider, IVendorProvider vendorProvider, IProductProvider productProvider)
     {
         _productionPartProvider=productionPartProvider;
         _vendorProvider = vendorProvider;
         _productProvider = productProvider;
     }
+
     public void CreateOutputXml()
     {
         var productionParts = _productionPartProvider.GetAllWithUniqueNames();

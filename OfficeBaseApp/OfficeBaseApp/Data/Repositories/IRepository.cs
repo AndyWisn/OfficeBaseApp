@@ -1,5 +1,7 @@
-﻿namespace OfficeBaseApp.Data.Repositories;
-using OfficeBaseApp.Data.Entities;
+﻿using OfficeBaseApp.Data.Entities;
+
+namespace OfficeBaseApp.Data.Repositories;
+
 public interface IRepository<T> : IReadRepository<T>, IWriteRepository<T> where T : class, IEntity
 {
     public event EventHandler<T> ItemAdded;

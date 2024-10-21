@@ -1,4 +1,5 @@
 ﻿namespace OfficeBaseApp.Components.CsvReader.Models;
+
 public class ProductionPartModel
 {
     public int Id { get; set; }

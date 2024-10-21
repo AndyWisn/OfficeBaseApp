@@ -1,10 +1,9 @@
-﻿namespace OfficeBaseApp.Data.Entities
+﻿namespace OfficeBaseApp.Data.Entities;
+
+public interface IEntity
 {
-    public interface IEntity
-    {
-        int Id { get; set; }
-        string? Name { get; set; }
-        string? Description { get; set; }
-        void EnterPropertiesFromConsole();
-    }
+    int Id { get; set; }
+    string? Name { get; set; }
+    string? Description { get; set; }
+    void EnterPropertiesFromConsole();
 }

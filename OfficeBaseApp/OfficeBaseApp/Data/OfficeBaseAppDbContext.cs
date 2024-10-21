@@ -2,6 +2,7 @@
 using OfficeBaseApp.Data.Entities;
 
 namespace OfficeBaseApp.Data;
+
 public class OfficeBaseAppDbContext : DbContext
 {
     public DbSet<ProductionPart> ProductionParts { get; set; }

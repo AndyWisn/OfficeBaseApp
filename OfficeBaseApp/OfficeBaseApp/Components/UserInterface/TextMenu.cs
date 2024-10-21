@@ -1,4 +1,5 @@
 ﻿namespace OfficeBaseApp.Components.TextMenu;
+
 public class TextMenu : ITextMenu
 {
     public delegate void MenuItemAction();
@@ -17,11 +18,13 @@ public class TextMenu : ITextMenu
         _verticalArrowsActive = verticalArrowsActive;
         _normalEnterAction = normalEnterAction;
     }
+
     public TextMenu(List<string> menuItems, List<MenuItemAction> menuActionMap)
     {
         _menuItems = menuItems;
         _menuActionMap = menuActionMap;
     }
+
     public ConsoleKeyInfo Run()
     {
         var actualItem = 1;
@@ -39,6 +42,13 @@ public class TextMenu : ITextMenu
         PrintHeader();
         return keyPressedOnExit;      
     }
+    public static void PrintHeader()
+    {
+        Console.Clear();
+        Console.WriteLine("============= OfficeBaseApp v.1 Menu Options =============");
+        Console.WriteLine("Move up/down with arrows. Confirm with Enter. Esc to exit.");
+    }
+
     private void PrintMenu(int actualItem)
     {
         int currentWidth = Console.WindowWidth;
@@ -72,6 +82,7 @@ public class TextMenu : ITextMenu
         Console.BackgroundColor = ConsoleColor.Black;
         Console.ForegroundColor = ConsoleColor.Gray;
     }
+
     private void NavigateMenu(ref int actualItem, ref bool menuIsActive)
     {
         do
@@ -117,11 +128,5 @@ public class TextMenu : ITextMenu
             }
         }
         while (true);
-    }
-    public static void PrintHeader()
-    {
-        Console.Clear();
-        Console.WriteLine("============= OfficeBaseApp v.1 Menu Options =============");
-        Console.WriteLine("Move up/down with arrows. Confirm with Enter. Esc to exit.");
     }
 }
